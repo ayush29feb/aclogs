@@ -17,7 +17,7 @@ def add(
         exercise = Exercise(name=name, muscle_group=muscle_group, notes=notes)
         session.add(exercise)
         try:
-            session.commit()
+            session.flush()
         except IntegrityError:
             session.rollback()
             typer.echo(json.dumps({"error": f"Exercise '{name}' already exists"}))
@@ -49,6 +49,9 @@ def relate(
     related_id: int = typer.Option(..., "--related-id"),
     relation_type: str = typer.Option("variant", "--type"),
 ):
+    if exercise_id == related_id:
+        typer.echo(json.dumps({"error": "Cannot relate an exercise to itself"}))
+        raise typer.Exit(1)
     with get_session() as session:
         relation = ExerciseRelation(
             exercise_id=exercise_id,
@@ -56,7 +59,12 @@ def relate(
             relation_type=relation_type,
         )
         session.add(relation)
-        session.commit()
+        try:
+            session.flush()
+        except IntegrityError:
+            session.rollback()
+            typer.echo(json.dumps({"error": "Relation already exists or invalid exercise ID"}))
+            raise typer.Exit(1)
         typer.echo(json.dumps({
             "exercise_id": exercise_id,
             "related_exercise_id": related_id,
