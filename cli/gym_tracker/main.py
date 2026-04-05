@@ -1,5 +1,6 @@
 import typer
 from gym_tracker.commands import exercise, workout, block, sets
+from gym_tracker.commands.progress import show as progress_show
 
 app = typer.Typer(help="Gym workout logger.")
 
@@ -15,6 +16,7 @@ app.add_typer(exercise.app, name="exercise")
 app.add_typer(workout.app, name="workout")
 app.add_typer(block.app, name="block")
 app.add_typer(sets.app, name="set")
+app.command(name="progress")(progress_show)
 
 if __name__ == "__main__":
     app()
