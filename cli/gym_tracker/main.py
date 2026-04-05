@@ -1,5 +1,5 @@
 import typer
-from gym_tracker.commands import exercise, workout, block
+from gym_tracker.commands import exercise, workout, block, sets
 
 app = typer.Typer(help="Gym workout logger.")
 
@@ -14,6 +14,7 @@ def main(ctx: typer.Context) -> None:
 app.add_typer(exercise.app, name="exercise")
 app.add_typer(workout.app, name="workout")
 app.add_typer(block.app, name="block")
+app.add_typer(sets.app, name="set")
 
 if __name__ == "__main__":
     app()
