@@ -28,6 +28,7 @@ def show(
             ).all()
             exercise_ids += [r.related_exercise_id for r in forward]
             exercise_ids += [r.exercise_id for r in reverse]
+            exercise_ids = list(set(exercise_ids))
 
         rows = (
             session.query(Set, Exercise.name.label("exercise_name"), Workout.date)
