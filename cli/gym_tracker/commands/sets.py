@@ -51,7 +51,7 @@ def add(
             "calories": s.calories,
             "watts": s.watts,
             "notes": s.notes,
-            "logged_at": str(s.logged_at),
+            "logged_at": s.logged_at.isoformat() if s.logged_at else None,
         }))
 
 

@@ -22,9 +22,9 @@ def _serialize_workout(workout: Workout, include_blocks: bool = False) -> dict:
     if include_blocks:
         blocks_out = []
         for block in sorted(workout.blocks, key=lambda b: b.order):
-            rounds: dict[int, list] = {}
+            rounds: dict[str, list] = {}
             for s in block.sets:
-                rounds.setdefault(s.round, []).append({
+                rounds.setdefault(str(s.round), []).append({
                     "id": s.id,
                     "exercise_id": s.exercise_id,
                     "exercise": s.exercise.name,
