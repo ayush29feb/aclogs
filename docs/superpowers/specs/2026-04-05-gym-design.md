@@ -39,7 +39,7 @@ Master catalog of movements.
 |--------|------|-------|
 | id | PK | |
 | name | text, unique | e.g. "Back Squat" |
-| muscle_group | text | e.g. "legs", "push", "pull", "core" |
+| muscle_group | text? | e.g. "legs", "push", "pull", "core" |
 | notes | text? | form cues, coaching notes |
 
 ### `workouts`
@@ -158,7 +158,7 @@ Two views, mobile-first (iPhone 14 Pro), accessible via Tailscale.
 ### Progress
 - **Big 4 spotlight**: Back Squat, Deadlift, Bench Press, Pull-ups — PR table + weight-over-time chart
 - **All lifts**: same data available for any exercise
-- **Cardio**: best efforts (watts, cals, distance) per machine
+- **Cardio**: best efforts (watts, cals, distance) — cardio machines (C2 Bike, Ski Erg, Echo Bike) are exercises in the catalog, progress works identically
 
 ---
 
