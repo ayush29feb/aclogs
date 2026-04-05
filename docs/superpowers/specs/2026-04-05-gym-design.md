@@ -81,6 +81,7 @@ Atomic unit. One exercise, one round. Multiple sets with the same `round` in a b
 | duration_secs | int? | cardio |
 | distance_m | float? | cardio |
 | calories | float? | cardio |
+| watts | float? | cardio — average power output |
 | notes | text? | |
 | logged_at | datetime | auto — passive rest time reference |
 
@@ -99,6 +100,17 @@ block: "Block B"
   round=1, exercise=squat, reps=5, weight=175
   round=2, exercise=squat, reps=5, weight=175
 ```
+
+### `exercise_relations`
+Links exercise variants so progress can be viewed across related movements.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| exercise_id | FK → exercises | |
+| related_exercise_id | FK → exercises | |
+| relation_type | text | e.g. `"variant"`, `"progression"` |
+
+**Example:** KB Cross Body RDL and DB RDL are both variants of RDL. `gym progress "KB Cross Body RDL"` shows KB history only. Querying with `--related` traverses relations and shows all variants labeled by exercise name — no numbers merged, just grouped for trend visibility.
 
 ---
 
@@ -158,7 +170,7 @@ Two views, mobile-first (iPhone 14 Pro), accessible via Tailscale.
 ### Progress
 - **Big 4 spotlight**: Back Squat, Deadlift, Bench Press, Pull-ups — PR table + weight-over-time chart
 - **All lifts**: same data available for any exercise
-- **Cardio**: best efforts (watts, cals, distance) — cardio machines (C2 Bike, Ski Erg, Echo Bike) are exercises in the catalog, progress works identically
+- **All exercises**: same progress view for any exercise — lifts, cardio, accessories
 
 ---
 
