@@ -4,7 +4,7 @@ from typing import List, Optional
 import typer
 from sqlalchemy import desc
 from gym_tracker.db import get_session
-from gym_tracker.models import Workout, Block, Set
+from gym_tracker.models import Workout
 
 app = typer.Typer()
 
@@ -90,10 +90,13 @@ def list_workouts(
     limit: int = typer.Option(20, "--limit"),
 ):
     with get_session() as session:
-        workouts = session.query(Workout).order_by(desc(Workout.date)).all()
+        query = session.query(Workout).order_by(desc(Workout.date))
+        if not tag:
+            query = query.limit(limit)
+        workouts = query.all()
         if tag:
             workouts = [w for w in workouts if tag in (w.tags or [])]
-        workouts = workouts[:limit]
+            workouts = workouts[:limit]
         typer.echo(json.dumps([_serialize_workout(w) for w in workouts]))
 
 
@@ -105,4 +108,5 @@ def delete(workout_id: int = typer.Argument(...)):
             typer.echo(json.dumps({"error": f"Workout {workout_id} not found"}))
             raise typer.Exit(1)
         session.delete(workout)
+        session.flush()
         typer.echo(json.dumps({"deleted": workout_id}))
