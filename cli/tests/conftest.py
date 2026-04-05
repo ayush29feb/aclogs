@@ -12,7 +12,17 @@ def gym_env(tmp_path):
     data_dir.mkdir()
     engine = create_engine(f"sqlite:///{data_dir}/gym.db")
     Base.metadata.create_all(engine)
+    engine.dispose()
     return {"GYM": str(tmp_path)}
+
+
+@pytest.fixture(autouse=True)
+def reset_engine():
+    """Reset the db engine singleton between tests so each test gets a fresh DB."""
+    import gym_tracker.db as db_module
+    db_module._engine = None
+    yield
+    db_module._engine = None
 
 
 @pytest.fixture

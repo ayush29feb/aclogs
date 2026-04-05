@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 
 from gym_tracker.models import Base
 
+_engine = None
+
 
 def get_db_path() -> Path:
     gym_root = os.environ.get("GYM")
@@ -16,14 +18,17 @@ def get_db_path() -> Path:
 
 
 def get_engine():
-    db_path = get_db_path()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
-    return create_engine(f"sqlite:///{db_path}")
+    global _engine
+    if _engine is None:
+        db_path = get_db_path()
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        _engine = create_engine(f"sqlite:///{db_path}")
+        Base.metadata.create_all(_engine)
+    return _engine
 
 
 @contextmanager
 def get_session():
-    engine = get_engine()
-    Base.metadata.create_all(engine)
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         yield session
+        session.commit()

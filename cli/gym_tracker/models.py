@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey, Text, JSON
 from sqlalchemy.orm import DeclarativeBase, relationship
 
@@ -56,7 +56,7 @@ class Set(Base):
     calories = Column(Float, nullable=True)
     watts = Column(Float, nullable=True)
     notes = Column(Text, nullable=True)
-    logged_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    logged_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     block = relationship("Block", back_populates="sets")
     exercise = relationship("Exercise")
 
