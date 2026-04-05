@@ -2,8 +2,11 @@ import typer
 
 app = typer.Typer(help="Gym workout logger.")
 
-# Subapps registered after individual command modules are created.
-# Placeholder so the entry point resolves now.
+
+@app.callback(invoke_without_command=True)
+def main(ctx: typer.Context) -> None:
+    pass
+
 
 if __name__ == "__main__":
     app()
