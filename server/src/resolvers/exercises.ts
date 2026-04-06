@@ -39,13 +39,13 @@ export function exerciseResolvers(prisma: PrismaClient) {
           SELECT e.id as rel_id, e.name as rel_name, e.muscle_group as rel_muscle_group, e.notes as rel_notes
           FROM exercise_relations er
           JOIN exercises e ON e.id = er.related_exercise_id
-          WHERE er.exercise_id = ${exercise.id}
+          WHERE er.exercise_id = ?
           UNION
           SELECT e.id as rel_id, e.name as rel_name, e.muscle_group as rel_muscle_group, e.notes as rel_notes
           FROM exercise_relations er
           JOIN exercises e ON e.id = er.exercise_id
-          WHERE er.related_exercise_id = ${exercise.id}
-        `);
+          WHERE er.related_exercise_id = ?
+        `, Number(exercise.id), Number(exercise.id));
         return rows.map((r) => ({
           id: Number(r.rel_id),
           name: r.rel_name,
