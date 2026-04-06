@@ -1,5 +1,5 @@
+import React, { useState, Suspense } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { useState, Suspense } from 'react';
 import type { ProgressViewPrsQuery as PrsQueryType } from './__generated__/ProgressViewPrsQuery.graphql.js';
 import type { ProgressViewHistoryQuery as HistoryQueryType } from './__generated__/ProgressViewHistoryQuery.graphql.js';
 
@@ -30,8 +30,8 @@ const historyQuery = graphql`
 type PrRow = PrsQueryType['response']['exercisePrs'][number];
 type HistoryEntry = { date: string; weightLbs: number | null | undefined };
 
-function fmt(v: number | null | undefined): string {
-  if (v == null) return '—';
+function fmt(v: number | null | undefined): React.ReactNode {
+  if (v == null) return <span style={{ color: '#333333' }}>—</span>;
   return `${v}`;
 }
 
@@ -88,17 +88,17 @@ function PrTable() {
   const accessories = rows.filter((r) => !r.isCompound);
 
   const thStyle: React.CSSProperties = {
-    padding: '8px 10px', fontSize: 10, fontWeight: 700, color: 'var(--text-3)',
-    textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.1em',
-    borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap',
+    padding: '10px 10px', fontSize: 9, fontWeight: 700, color: '#444444',
+    textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.14em',
+    borderBottom: '1px solid #222222', whiteSpace: 'nowrap',
   };
   const tdStyle: React.CSSProperties = {
-    padding: '9px 10px', fontSize: 13, textAlign: 'right', color: 'var(--text-1)', fontWeight: 600,
+    padding: '10px 10px', fontSize: 13, textAlign: 'right', color: '#ffffff', fontWeight: 500,
     fontVariantNumeric: 'tabular-nums',
   };
   const nameTdStyle: React.CSSProperties = {
-    padding: '9px 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-1)', textAlign: 'left', whiteSpace: 'nowrap',
-    textTransform: 'uppercase', letterSpacing: '0.02em',
+    padding: '10px 10px', fontSize: 12, fontWeight: 700, color: '#ffffff', textAlign: 'left', whiteSpace: 'nowrap',
+    textTransform: 'uppercase', letterSpacing: '0.04em',
   };
 
   const renderRow = (row: PrRow) => {
