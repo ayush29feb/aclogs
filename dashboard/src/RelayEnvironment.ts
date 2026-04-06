@@ -15,6 +15,7 @@ const fetchFn: FetchFunction = async (request, variables) => {
 const environment = new Environment({
   network: Network.create(fetchFn),
   store: new Store(new RecordSource()),
+  getDataID: (fieldValue, typeName) => `${typeName}:${fieldValue.id}`,
 });
 
 export default environment;
