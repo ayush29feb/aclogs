@@ -32,15 +32,15 @@ export function progressResolvers(prisma: PrismaClient) {
 
         if (args.related) {
           const relRows = await prisma.$queryRawUnsafe<{ other_id: number }[]>(`
-            SELECT related_exercise_id as other_id FROM exercise_relations WHERE exercise_id = ${primaryId}
+            SELECT related_exercise_id as other_id FROM exercise_relations WHERE exercise_id = ?
             UNION
-            SELECT exercise_id as other_id FROM exercise_relations WHERE related_exercise_id = ${primaryId}
-          `);
+            SELECT exercise_id as other_id FROM exercise_relations WHERE related_exercise_id = ?
+          `, primaryId, primaryId);
           const relIds = relRows.map((r) => Number(r.other_id));
           exerciseIds = [...new Set([primaryId, ...relIds])];
         }
 
-        const idList = exerciseIds.join(',');
+        const placeholders = exerciseIds.map(() => '?').join(',');
         const rows = await prisma.$queryRawUnsafe<DBSetRow[]>(`
           SELECT CAST(w.date AS TEXT) as date, e.name as exercise_name,
                  s.weight_lbs, s.reps, s.rpe, s.watts, s.calories, s.duration_secs
@@ -48,9 +48,9 @@ export function progressResolvers(prisma: PrismaClient) {
           JOIN blocks b ON b.id = s.block_id
           JOIN workouts w ON w.id = b.workout_id
           JOIN exercises e ON e.id = s.exercise_id
-          WHERE s.exercise_id IN (${idList})
+          WHERE s.exercise_id IN (${placeholders})
           ORDER BY w.date ASC
-        `);
+        `, ...exerciseIds);
 
         const history = rows.map((r) => ({
           date: r.date,
