@@ -72,7 +72,7 @@ function BlockSection({ block }: { block: Block }) {
   }
 
   return (
-    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #1e1e1e' }}>
+    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2e2e2e' }}>
       <div style={{ fontSize: 9, fontWeight: 700, color: '#777777', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 8 }}>
         {block.name}
       </div>
@@ -98,9 +98,9 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 
   return (
-    <div style={{ borderBottom: '1px solid #1e1e1e' }}>
+    <div style={{ border: '1px solid #2e2e2e', marginBottom: 8, background: '#0f0f0f' }}>
       <button
-        style={{ padding: '16px 0', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
+        style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
         onClick={() => setExpanded(!expanded)}
       >
         <div style={{ minWidth: 0 }}>
@@ -112,9 +112,9 @@ function WorkoutRow({ workout }: { workout: Workout }) {
         <span style={{ color: '#666666', fontSize: 10, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
       </button>
       {expanded && (
-        <div style={{ paddingBottom: 16 }}>
+        <div style={{ padding: '0 16px 14px', borderTop: '1px solid #2e2e2e' }}>
           {workout.notes && (
-            <div style={{ fontSize: 12, color: '#666666', marginBottom: 8 }}>{workout.notes}</div>
+            <div style={{ fontSize: 12, color: '#666666', marginTop: 10, marginBottom: 4 }}>{workout.notes}</div>
           )}
           {workout.blocks.map((b) => <BlockSection key={b.id} block={b} />)}
         </div>
@@ -134,7 +134,7 @@ function HistoryContent({ tag }: { tag: string | null }) {
   }
 
   return (
-    <div style={{ borderTop: '1px solid #1e1e1e' }}>
+    <div>
       {workouts.map((w) => <WorkoutRow key={w.id} workout={w} />)}
     </div>
   );
