@@ -54,11 +54,10 @@ function formatSet(s: Set): string {
   return parts.join(' · ') || '—';
 }
 
-function RoundRow({ round }: { round: Round }) {
-  const isSuperSet = round.sets.length > 1;
+function RoundRow({ round, showRoundLabel }: { round: Round; showRoundLabel: boolean }) {
   return (
     <div style={{ marginBottom: 6 }}>
-      {isSuperSet && (
+      {showRoundLabel && (
         <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-3)', marginBottom: 2 }}>
           Round {round.round}
         </div>
@@ -74,6 +73,7 @@ function RoundRow({ round }: { round: Round }) {
 }
 
 function BlockSection({ block }: { block: Block }) {
+  const showRoundLabels = block.rounds.length > 1;
   return (
     <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border-light)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -81,7 +81,7 @@ function BlockSection({ block }: { block: Block }) {
         {block.scheme && <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{block.scheme}</span>}
       </div>
       {block.rounds.map((r) => (
-        <RoundRow key={r.round} round={r} />
+        <RoundRow key={r.round} round={r} showRoundLabel={showRoundLabels} />
       ))}
     </div>
   );
@@ -96,8 +96,8 @@ function WorkoutRow({ workout }: { workout: Workout }) {
 
   return (
     <div className="card" style={{ marginBottom: 12 }}>
-      <div
-        style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}
+      <button
+        style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
         onClick={() => setExpanded(!expanded)}
       >
         <div>
@@ -113,7 +113,7 @@ function WorkoutRow({ workout }: { workout: Workout }) {
           )}
         </div>
         <span style={{ color: 'var(--text-3)', fontSize: 18, marginTop: 2 }}>{expanded ? '▲' : '▼'}</span>
-      </div>
+      </button>
       {expanded && (
         <div style={{ padding: '0 16px 14px' }}>
           {workout.notes && (
@@ -126,8 +126,10 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 }
 
+const QUICK_TAGS = ['upper', 'lower', 'squad', 'cardio'];
+
 function HistoryContent({ tag }: { tag: string | null }) {
-  const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag: tag ?? undefined });
+  const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag });
   const workouts = data.workouts;
 
   if (workouts.length === 0) {
@@ -143,7 +145,6 @@ function HistoryContent({ tag }: { tag: string | null }) {
 
 export default function HistoryView() {
   const [activeTag, setActiveTag] = useState<string | null>(null);
-  const QUICK_TAGS = ['upper', 'lower', 'squad', 'cardio'];
 
   return (
     <div style={{ paddingTop: 16 }}>

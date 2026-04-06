@@ -1,8 +1,6 @@
 type Query {
   workouts(limit: Int, tag: String): [Workout!]!
-  workout(id: ID!): Workout
   exercises: [Exercise!]!
-  exercise(name: String!): Exercise
   progress(exerciseName: String!, related: Boolean): Progress!
 }
 
