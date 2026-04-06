@@ -143,6 +143,70 @@ This wipes existing data and re-imports from scratch. The script is hardcoded pe
 
 ---
 
+## Updating Landing Page Screenshots
+
+The `docs/index.html` landing page uses real screenshots from the running app. Regenerate them when the UI changes.
+
+### Prerequisites
+
+Both servers must be running (ports 47322 and 47323). Then:
+
+```bash
+mkdir -p /tmp/gym-pw && cd /tmp/gym-pw
+npm init -y && npm install playwright
+npx playwright install chromium
+```
+
+### Capture script
+
+```bash
+cat > /tmp/gym-pw/capture.mjs << 'EOF'
+import { chromium } from 'playwright';
+import { mkdir } from 'fs/promises';
+import path from 'path';
+
+const GYM = process.env.GYM;
+if (!GYM) throw new Error('GYM env not set');
+const OUT = path.join(GYM, 'docs/images');
+await mkdir(OUT, { recursive: true });
+
+const browser = await chromium.launch({ headless: true });
+const context = await browser.newContext({
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 2,
+});
+const page = await context.newPage();
+
+async function capture(route, name) {
+  await page.goto(`http://localhost:47323${route}`, { waitUntil: 'networkidle', timeout: 20000 });
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: path.join(OUT, `${name}.jpg`), type: 'jpeg', quality: 92 });
+  console.log(`✓ ${name}.jpg`);
+}
+
+await capture('/history', 'history');
+await capture('/progress', 'prs');
+await browser.close();
+EOF
+```
+
+### Run
+
+```bash
+GYM=$(git rev-parse --show-toplevel) node /tmp/gym-pw/capture.mjs
+```
+
+### Commit
+
+```bash
+cd "$(git rev-parse --show-toplevel)"
+git add docs/images/
+git commit -m "docs: refresh landing page screenshots"
+git push
+```
+
+---
+
 ## Common Problems
 
 ### Server returns no data
