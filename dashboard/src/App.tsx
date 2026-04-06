@@ -4,8 +4,8 @@ import HistoryView from './views/HistoryView.js';
 import ProgressView from './views/ProgressView.js';
 
 const NAV = [
-  { to: '/history',  icon: '📋', label: 'History'  },
-  { to: '/progress', icon: '📈', label: 'Progress' },
+  { to: '/history',  icon: '▤', label: 'History'  },
+  { to: '/progress', icon: '↑', label: 'Progress' },
 ];
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
     <>
       <header className="topbar">
         <div className="topbar-inner">
-          <span className="topbar-brand">💪 Gym</span>
+          <span className="topbar-brand">Gym Log</span>
         </div>
       </header>
 

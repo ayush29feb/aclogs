@@ -88,15 +88,17 @@ function PrTable() {
   const accessories = rows.filter((r) => !r.isCompound);
 
   const thStyle: React.CSSProperties = {
-    padding: '6px 8px', fontSize: 11, fontWeight: 700, color: 'var(--text-3)',
-    textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.04em',
+    padding: '8px 10px', fontSize: 10, fontWeight: 700, color: 'var(--text-3)',
+    textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.1em',
     borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap',
   };
   const tdStyle: React.CSSProperties = {
-    padding: '8px 8px', fontSize: 13, textAlign: 'right', color: 'var(--green)', fontWeight: 600,
+    padding: '9px 10px', fontSize: 13, textAlign: 'right', color: 'var(--text-1)', fontWeight: 600,
+    fontVariantNumeric: 'tabular-nums',
   };
   const nameTdStyle: React.CSSProperties = {
-    padding: '8px 8px', fontSize: 13, fontWeight: 500, color: 'var(--text-1)', textAlign: 'left', whiteSpace: 'nowrap',
+    padding: '9px 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-1)', textAlign: 'left', whiteSpace: 'nowrap',
+    textTransform: 'uppercase', letterSpacing: '0.02em',
   };
 
   const renderRow = (row: PrRow) => {
@@ -106,7 +108,7 @@ function PrTable() {
         <tr
           key={row.exerciseName}
           onClick={() => setSelected(isSelected ? null : row.exerciseName)}
-          style={{ borderBottom: '1px solid var(--border-light)', cursor: 'pointer', background: isSelected ? 'var(--border-light)' : undefined }}
+          style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', background: isSelected ? '#1a1a1a' : undefined }}
         >
           <td style={nameTdStyle}>{row.exerciseName}</td>
           <td style={tdStyle}>{fmt(row.pr1)}</td>
@@ -116,7 +118,7 @@ function PrTable() {
         </tr>
         {isSelected && (
           <tr key={`${row.exerciseName}-detail`}>
-            <td colSpan={5} style={{ padding: '0 8px 12px', background: 'var(--border-light)' }}>
+            <td colSpan={5} style={{ padding: '0 8px 12px', background: '#1a1a1a' }}>
               <Suspense fallback={<p style={{ fontSize: 12, color: 'var(--text-3)', margin: '8px 0' }}>Loading…</p>}>
                 <Sparkline exerciseName={row.exerciseName} />
               </Suspense>
@@ -143,7 +145,7 @@ function PrTable() {
           {compounds.map(renderRow)}
           {accessories.length > 0 && (
             <tr>
-              <td colSpan={5} style={{ padding: '10px 8px 4px', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <td colSpan={5} style={{ padding: '12px 10px 4px', fontSize: 10, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 Accessories
               </td>
             </tr>

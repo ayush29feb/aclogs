@@ -72,17 +72,17 @@ function BlockSection({ block }: { block: Block }) {
   }
 
   return (
-    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-light)' }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 6 }}>
+    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>
         {block.name}
       </div>
       {exerciseOrder.map((name) => {
         const sets = bySets.get(name)!;
         const chips = sets.map(formatSetChip);
         return (
-          <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 13, padding: '2px 0', gap: 8 }}>
+          <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 13, padding: '3px 0', gap: 8 }}>
             <span style={{ color: 'var(--text-1)', fontWeight: 500, flexShrink: 0 }}>{name}</span>
-            <span style={{ color: 'var(--text-3)', fontSize: 12, textAlign: 'right' }}>{chips.join('  ')}</span>
+            <span style={{ color: 'var(--text-2)', fontSize: 12, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{chips.join('  ')}</span>
           </div>
         );
       })}
@@ -98,23 +98,23 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 
   return (
-    <div className="card" style={{ marginBottom: 12 }}>
+    <div className="card" style={{ marginBottom: 1 }}>
       <button
         style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
         onClick={() => setExpanded(!expanded)}
       >
         <div>
-          <div style={{ fontWeight: 600, fontSize: 14 }}>{workout.name}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>
-            {fmtDate(workout.date)} · {setCount} sets{workout.sleepHours != null && ` · 😴 ${workout.sleepHours}h`}
+          <div style={{ fontWeight: 800, fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{workout.name}</div>
+          <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3, letterSpacing: '0.03em' }}>
+            {fmtDate(workout.date)} &nbsp;·&nbsp; {setCount} sets{workout.sleepHours != null && ` · ${workout.sleepHours}h sleep`}
           </div>
         </div>
-        <span style={{ color: 'var(--text-3)', fontSize: 18, marginTop: 2 }}>{expanded ? '▲' : '▼'}</span>
+        <span style={{ color: 'var(--text-3)', fontSize: 14, marginTop: 2 }}>{expanded ? '▲' : '▼'}</span>
       </button>
       {expanded && (
-        <div style={{ padding: '0 16px 14px' }}>
+        <div style={{ padding: '0 16px 14px', borderTop: '1px solid var(--border)' }}>
           {workout.notes && (
-            <div style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 8, fontStyle: 'italic' }}>{workout.notes}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 10, marginBottom: 4 }}>{workout.notes}</div>
           )}
           {workout.blocks.map((b) => <BlockSection key={b.id} block={b} />)}
         </div>
@@ -123,7 +123,7 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 }
 
-const QUICK_TAGS = ['upper', 'lower', 'squat', 'cardio'];
+const QUICK_TAGS = ['upper', 'lower', 'aps', 'mpa', 'test'];
 
 function HistoryContent({ tag }: { tag: string | null }) {
   const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag });
@@ -145,7 +145,7 @@ export default function HistoryView() {
 
   return (
     <div style={{ paddingTop: 16 }}>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
         <button
           className={`tag-btn${activeTag === null ? ' active' : ''}`}
           onClick={() => setActiveTag(null)}
