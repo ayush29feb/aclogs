@@ -1,5 +1,5 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import type { ProgressViewProgressQuery as ProgressQueryType } from './__generated__/ProgressViewProgressQuery.graphql.js';
 import type { ProgressViewExercisesQuery as ExercisesQueryType } from './__generated__/ProgressViewExercisesQuery.graphql.js';
 
@@ -54,14 +54,14 @@ function Sparkline({ history }: { history: readonly HistoryEntry[] }) {
   const maxW = Math.max(...weights);
   const range = maxW - minW || 1;
 
-  const toX = (_: string, i: number) => pad + (i / (points.length - 1)) * (W - pad * 2);
+  const toX = (i: number) => pad + (i / (points.length - 1)) * (W - pad * 2);
   const toY = (w: number) => H - pad - ((w - minW) / range) * (H - pad * 2);
 
   const d = points
-    .map(([, w], i) => `${i === 0 ? 'M' : 'L'}${toX('', i).toFixed(1)},${toY(w).toFixed(1)}`)
+    .map(([, w], i) => `${i === 0 ? 'M' : 'L'}${toX(i).toFixed(1)},${toY(w).toFixed(1)}`)
     .join(' ');
 
-  const lastX = toX('', points.length - 1);
+  const lastX = toX(points.length - 1);
   const lastY = toY(weights[weights.length - 1]);
 
   return (
@@ -97,7 +97,7 @@ function PrTable({ prs }: { prs: readonly Pr[] }) {
       </thead>
       <tbody>
         {[...prs].sort((a, b) => a.reps - b.reps).map((pr) => (
-          <tr key={pr.reps} style={{ borderBottom: '1px solid var(--border-light)' }}>
+          <tr key={`${pr.reps}-${pr.date}`} style={{ borderBottom: '1px solid var(--border-light)' }}>
             <td style={{ padding: '8px 0', fontWeight: 600 }}>{pr.reps}</td>
             <td style={{ padding: '8px 0', textAlign: 'right', color: 'var(--green)', fontWeight: 700 }}>{pr.weightLbs} lbs</td>
             <td style={{ padding: '8px 0', textAlign: 'right', color: 'var(--text-3)' }}>{pr.date}</td>
@@ -127,6 +127,13 @@ function ProgressContent({ exerciseName }: { exerciseName: string }) {
 function ExercisePicker({ value, onChange }: { value: string; onChange: (name: string) => void }) {
   const data = useLazyLoadQuery<ExercisesQueryType>(exercisesQuery, {});
   const exercises = data.exercises.map((e) => e.name).sort();
+
+  useEffect(() => {
+    if (exercises.length > 0 && !exercises.includes(value)) {
+      onChange(exercises[0]);
+    }
+  }, [exercises, value, onChange]);
+
   return (
     <select
       value={value}
