@@ -144,8 +144,8 @@ export default function HistoryView() {
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
   return (
-    <div style={{ paddingTop: 16 }}>
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+    <div style={{ paddingTop: 12 }}>
+      <div className="tag-row">
         <button
           className={`tag-btn${activeTag === null ? ' active' : ''}`}
           onClick={() => setActiveTag(null)}
