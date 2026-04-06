@@ -1,10 +1,11 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useState } from 'react';
 import type { HistoryViewQuery as HistoryViewQueryType } from './__generated__/HistoryViewQuery.graphql.js';
+import { useDateRange } from '../DateRangeContext.js';
 
 const query = graphql`
-  query HistoryViewQuery($limit: Int, $tag: String) {
-    workouts(limit: $limit, tag: $tag) {
+  query HistoryViewQuery($limit: Int, $tag: String, $since: String) {
+    workouts(limit: $limit, tag: $tag, since: $since) {
       id
       name
       date
@@ -126,7 +127,8 @@ function WorkoutRow({ workout }: { workout: Workout }) {
 const QUICK_TAGS = ['upper', 'lower', 'aps', 'mpa', 'test'];
 
 function HistoryContent({ tag }: { tag: string | null }) {
-  const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag });
+  const { since } = useDateRange();
+  const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag, since }, { fetchPolicy: 'network-only' });
   const workouts = data.workouts;
 
   if (workouts.length === 0) {

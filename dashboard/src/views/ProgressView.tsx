@@ -1,4 +1,5 @@
-import React, { useState, Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
+import { useDateRange } from '../DateRangeContext.js';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import type { ProgressViewPrsQuery as PrsQueryType } from './__generated__/ProgressViewPrsQuery.graphql.js';
 import type { ProgressViewHistoryQuery as HistoryQueryType } from './__generated__/ProgressViewHistoryQuery.graphql.js';
@@ -157,38 +158,12 @@ function PrTable({ since }: { since: string | null }) {
   );
 }
 
-const DATE_RANGES: { label: string; months: number | null }[] = [
-  { label: '1M', months: 1 },
-  { label: '3M', months: 3 },
-  { label: '6M', months: 6 },
-  { label: '1Y', months: 12 },
-  { label: 'All', months: null },
-];
-
-function sinceDate(months: number): string {
-  const d = new Date();
-  d.setMonth(d.getMonth() - months);
-  return d.toISOString().slice(0, 10);
-}
-
 export default function ProgressView() {
-  const [range, setRange] = useState<number | null>(null);
-  const since = range != null ? sinceDate(range) : null;
+  const { since } = useDateRange();
 
   return (
     <div style={{ paddingTop: 12 }}>
-      <div className="tag-row" style={{ marginBottom: 16 }}>
-        {DATE_RANGES.map(({ label, months }) => (
-          <button
-            key={label}
-            className={`tag-btn${range === months ? ' active' : ''}`}
-            onClick={() => setRange(months)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <div style={{ borderTop: '1px solid #1e1e1e', overflowX: 'auto' }}>
+      <div style={{ overflowX: 'auto' }}>
         <Suspense fallback={<p style={{ textAlign: 'center', color: 'var(--text-3)', padding: 32 }}>Loading…</p>}>
           <PrTable since={since} />
         </Suspense>

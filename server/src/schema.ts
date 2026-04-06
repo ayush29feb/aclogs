@@ -1,6 +1,6 @@
 export const typeDefs = /* GraphQL */ `
   type Query {
-    workouts(limit: Int, tag: String): [Workout!]!
+    workouts(limit: Int, tag: String, since: String): [Workout!]!
     workout(id: Int!): Workout
     exercises: [Exercise!]!
     exercise(name: String!): Exercise

@@ -134,10 +134,11 @@ async function fetchBlocksWithSets(prisma: PrismaClient, workoutIds: number[]) {
 export function workoutResolvers(prisma: PrismaClient) {
   return {
     Query: {
-      async workouts(_: unknown, args: { limit?: number; tag?: string }) {
+      async workouts(_: unknown, args: { limit?: number; tag?: string; since?: string }) {
         const limit = args.limit ?? 20;
+        const sinceClause = args.since ? `AND date >= '${args.since}'` : '';
         const rows = await prisma.$queryRawUnsafe<DBWorkout[]>(
-          `SELECT id, name, CAST(date AS TEXT) as date, sleep_hours, tags, notes, photo_path FROM workouts ORDER BY date DESC LIMIT ${limit}`
+          `SELECT id, name, CAST(date AS TEXT) as date, sleep_hours, tags, notes, photo_path FROM workouts WHERE 1=1 ${sinceClause} ORDER BY date DESC LIMIT ${limit}`
         );
         let filtered = rows;
         if (args.tag) {
