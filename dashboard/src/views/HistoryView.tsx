@@ -126,7 +126,7 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 }
 
-const QUICK_TAGS = ['upper', 'lower', 'squad', 'cardio'];
+const QUICK_TAGS = ['upper', 'lower', 'squat', 'cardio'];
 
 function HistoryContent({ tag }: { tag: string | null }) {
   const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag });

@@ -6,6 +6,9 @@ const fetchFn: FetchFunction = async (request, variables) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query: request.text, variables }),
   });
+  if (!response.ok) {
+    throw new Error(`GraphQL request failed: ${response.status}`);
+  }
   return response.json();
 };
 

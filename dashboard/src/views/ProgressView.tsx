@@ -1,5 +1,5 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense, useEffect, useMemo } from 'react';
 import type { ProgressViewProgressQuery as ProgressQueryType } from './__generated__/ProgressViewProgressQuery.graphql.js';
 import type { ProgressViewExercisesQuery as ExercisesQueryType } from './__generated__/ProgressViewExercisesQuery.graphql.js';
 
@@ -126,7 +126,10 @@ function ProgressContent({ exerciseName }: { exerciseName: string }) {
 
 function ExercisePicker({ value, onChange }: { value: string; onChange: (name: string) => void }) {
   const data = useLazyLoadQuery<ExercisesQueryType>(exercisesQuery, {});
-  const exercises = data.exercises.map((e) => e.name).sort();
+  const exercises = useMemo(
+    () => data.exercises.map((e) => e.name).sort(),
+    [data.exercises]
+  );
 
   useEffect(() => {
     if (exercises.length > 0 && !exercises.includes(value)) {
