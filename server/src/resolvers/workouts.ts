@@ -45,7 +45,7 @@ function workoutToGql(row: DBWorkout) {
     }
   }
   return {
-    id: Number(row.id),
+    id: String(row.id),
     name: row.name,
     date: row.date,
     sleepHours: row.sleep_hours != null ? Number(row.sleep_hours) : null,
@@ -56,7 +56,7 @@ function workoutToGql(row: DBWorkout) {
 
 function setToGql(row: DBSet) {
   return {
-    id: Number(row.id),
+    id: String(row.id),
     exerciseId: Number(row.exercise_id),
     exerciseName: row.exercise_name,
     round: Number(row.round),
@@ -120,7 +120,7 @@ async function fetchBlocksWithSets(prisma: PrismaClient, workoutIds: number[]) {
       }));
 
     blocksByWorkout.get(wid)!.push({
-      id: Number(b.id),
+      id: String(b.id),
       name: b.name,
       order: Number(b.order),
       scheme: b.scheme ?? null,
@@ -139,13 +139,18 @@ export function workoutResolvers(prisma: PrismaClient) {
         const rows = await prisma.$queryRawUnsafe<DBWorkout[]>(
           `SELECT id, name, date, sleep_hours, tags, notes, photo_path FROM workouts ORDER BY date DESC LIMIT ${limit}`
         );
-        let workouts = rows.map(workoutToGql);
+        let filtered = rows;
         if (args.tag) {
-          workouts = workouts.filter((w) => w.tags.includes(args.tag!));
+          filtered = rows.filter((r) => {
+            try { return (JSON.parse(r.tags ?? '[]') as string[]).includes(args.tag!); } catch { return false; }
+          });
         }
-        const ids = workouts.map((w) => w.id);
+        const ids = filtered.map((r) => Number(r.id));
         const blocksByWorkout = await fetchBlocksWithSets(prisma, ids);
-        return workouts.map((w) => ({ ...w, blocks: blocksByWorkout.get(w.id) ?? [] }));
+        return filtered.map((r) => {
+          const w = workoutToGql(r);
+          return { ...w, blocks: blocksByWorkout.get(Number(r.id)) ?? [] };
+        });
       },
 
       async workout(_: unknown, args: { id: number }) {
@@ -153,9 +158,10 @@ export function workoutResolvers(prisma: PrismaClient) {
           `SELECT id, name, date, sleep_hours, tags, notes, photo_path FROM workouts WHERE id = ${args.id}`
         );
         if (rows.length === 0) return null;
+        const numId = Number(rows[0].id);
         const w = workoutToGql(rows[0]);
-        const blocksByWorkout = await fetchBlocksWithSets(prisma, [w.id]);
-        return { ...w, blocks: blocksByWorkout.get(w.id) ?? [] };
+        const blocksByWorkout = await fetchBlocksWithSets(prisma, [numId]);
+        return { ...w, blocks: blocksByWorkout.get(numId) ?? [] };
       },
     },
   };

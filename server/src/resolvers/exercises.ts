@@ -47,7 +47,7 @@ export function exerciseResolvers(prisma: PrismaClient) {
           WHERE er.related_exercise_id = ?
         `, Number(exercise.id), Number(exercise.id));
         return rows.map((r) => ({
-          id: Number(r.rel_id),
+          id: String(r.rel_id),
           name: r.rel_name,
           muscleGroup: r.rel_muscle_group ?? null,
           notes: r.rel_notes ?? null,
@@ -59,7 +59,7 @@ export function exerciseResolvers(prisma: PrismaClient) {
 
 function toGql(row: DBExercise) {
   return {
-    id: Number(row.id),
+    id: String(row.id),
     name: row.name,
     muscleGroup: row.muscle_group ?? null,
     notes: row.notes ?? null,

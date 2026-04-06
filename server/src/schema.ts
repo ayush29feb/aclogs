@@ -8,7 +8,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type Workout {
-    id: Int!
+    id: ID!
     name: String!
     date: String!
     sleepHours: Float
@@ -18,7 +18,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type Block {
-    id: Int!
+    id: ID!
     name: String!
     order: Int!
     scheme: String
@@ -31,7 +31,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type Set {
-    id: Int!
+    id: ID!
     exerciseId: Int!
     exerciseName: String!
     round: Int!
@@ -47,7 +47,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   type Exercise {
-    id: Int!
+    id: ID!
     name: String!
     muscleGroup: String
     notes: String
