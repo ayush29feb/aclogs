@@ -90,22 +90,22 @@ function PrTable({ since }: { since: string | null }) {
   const accessories = rows.filter((r) => !r.isCompound);
 
   const thStyle: React.CSSProperties = {
-    padding: '10px 10px', fontSize: 9, fontWeight: 700, color: '#777777',
-    textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.14em',
+    padding: '10px 6px', fontSize: 9, fontWeight: 700, color: '#777777',
+    textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.08em',
     borderBottom: '1px solid #222222', whiteSpace: 'nowrap',
   };
   const tdStyle: React.CSSProperties = {
-    padding: '10px 10px', fontSize: 13, textAlign: 'right', color: '#ffffff', fontWeight: 500,
-    fontVariantNumeric: 'tabular-nums',
+    padding: '10px 6px', fontSize: 13, textAlign: 'right', color: '#ffffff', fontWeight: 500,
+    fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap',
   };
   const nameTdStyle: React.CSSProperties = {
-    padding: '10px 10px', fontSize: 12, fontWeight: 700, color: '#ffffff', textAlign: 'left', whiteSpace: 'nowrap',
-    textTransform: 'uppercase', letterSpacing: '0.04em',
+    padding: '10px 6px 10px 0', fontSize: 11, fontWeight: 700, color: '#ffffff', textAlign: 'left',
+    textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.3,
   };
 
   const countTdStyle: React.CSSProperties = {
-    padding: '10px 10px', fontSize: 11, textAlign: 'right', color: '#555555',
-    fontVariantNumeric: 'tabular-nums',
+    padding: '10px 6px', fontSize: 11, textAlign: 'right', color: '#555555',
+    fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap',
   };
 
   const renderRow = (row: PrRow) => {
@@ -138,8 +138,16 @@ function PrTable({ since }: { since: string | null }) {
   };
 
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+    <div>
+      <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+        <colgroup>
+          <col style={{ width: 'auto' }} />
+          <col style={{ width: '28px' }} />
+          <col style={{ width: '46px' }} />
+          <col style={{ width: '46px' }} />
+          <col style={{ width: '46px' }} />
+          <col style={{ width: '46px' }} />
+        </colgroup>
         <thead>
           <tr>
             <th style={{ ...thStyle, textAlign: 'left' }}>Exercise</th>
@@ -171,11 +179,9 @@ export default function ProgressView() {
 
   return (
     <div style={{ paddingTop: 12 }}>
-      <div style={{ overflowX: 'auto' }}>
-        <Suspense fallback={<p style={{ textAlign: 'center', color: 'var(--text-3)', padding: 32 }}>Loading…</p>}>
-          <PrTable since={since} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<p style={{ textAlign: 'center', color: 'var(--text-3)', padding: 32 }}>Loading…</p>}>
+        <PrTable since={since} />
+      </Suspense>
     </div>
   );
 }
