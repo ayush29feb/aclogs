@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
+const COMPOUNDS = new Set(['Back Squat', 'Deadlift', 'Bench Press', 'Pull-ups', 'Strict Press', 'Chin-up']);
+
 type DBExerciseRow = { id: number; name: string };
 
 type DBSetRow = {
@@ -80,6 +82,37 @@ export function progressResolvers(prisma: PrismaClient) {
           .map(([reps, pr]) => ({ reps, weightLbs: pr.weightLbs, date: pr.date }));
 
         return { exerciseName: args.exerciseName, prs, history };
+      },
+
+      async exercisePrs() {
+        const rows = await prisma.$queryRawUnsafe<{ name: string; reps: number; max_weight: number }[]>(`
+          SELECT e.name, s.reps, MAX(s.weight_lbs) as max_weight
+          FROM sets s
+          JOIN exercises e ON e.id = s.exercise_id
+          WHERE s.reps IN (1, 3, 5, 8) AND s.weight_lbs IS NOT NULL
+          GROUP BY e.id, s.reps
+          ORDER BY e.name, s.reps
+        `);
+
+        const byExercise = new Map<string, { pr1?: number; pr3?: number; pr5?: number; pr8?: number }>();
+        for (const row of rows) {
+          if (!byExercise.has(row.name)) byExercise.set(row.name, {});
+          const entry = byExercise.get(row.name)!;
+          const reps = Number(row.reps);
+          const w = Number(row.max_weight);
+          if (reps === 1) entry.pr1 = w;
+          else if (reps === 3) entry.pr3 = w;
+          else if (reps === 5) entry.pr5 = w;
+          else if (reps === 8) entry.pr8 = w;
+        }
+
+        return Array.from(byExercise.entries())
+          .map(([name, prs]) => ({ exerciseName: name, isCompound: COMPOUNDS.has(name), ...prs }))
+          .sort((a, b) => {
+            if (a.isCompound && !b.isCompound) return -1;
+            if (!a.isCompound && b.isCompound) return 1;
+            return a.exerciseName.localeCompare(b.exerciseName);
+          });
       },
     },
   };

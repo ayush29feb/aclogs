@@ -5,6 +5,16 @@ export const typeDefs = /* GraphQL */ `
     exercises: [Exercise!]!
     exercise(name: String!): Exercise
     progress(exerciseName: String!, related: Boolean): Progress!
+    exercisePrs: [ExercisePrRow!]!
+  }
+
+  type ExercisePrRow {
+    exerciseName: String!
+    isCompound: Boolean!
+    pr1: Float
+    pr3: Float
+    pr5: Float
+    pr8: Float
   }
 
   type Workout {

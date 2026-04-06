@@ -137,7 +137,7 @@ export function workoutResolvers(prisma: PrismaClient) {
       async workouts(_: unknown, args: { limit?: number; tag?: string }) {
         const limit = args.limit ?? 20;
         const rows = await prisma.$queryRawUnsafe<DBWorkout[]>(
-          `SELECT id, name, date, sleep_hours, tags, notes, photo_path FROM workouts ORDER BY date DESC LIMIT ${limit}`
+          `SELECT id, name, CAST(date AS TEXT) as date, sleep_hours, tags, notes, photo_path FROM workouts ORDER BY date DESC LIMIT ${limit}`
         );
         let filtered = rows;
         if (args.tag) {
@@ -155,7 +155,7 @@ export function workoutResolvers(prisma: PrismaClient) {
 
       async workout(_: unknown, args: { id: number }) {
         const rows = await prisma.$queryRawUnsafe<DBWorkout[]>(
-          `SELECT id, name, date, sleep_hours, tags, notes, photo_path FROM workouts WHERE id = ${args.id}`
+          `SELECT id, name, CAST(date AS TEXT) as date, sleep_hours, tags, notes, photo_path FROM workouts WHERE id = ${args.id}`
         );
         if (rows.length === 0) return null;
         const numId = Number(rows[0].id);
