@@ -8,8 +8,6 @@ type DBExercise = {
 };
 
 type DBRelation = {
-  exercise_id: number;
-  related_exercise_id: number;
   rel_id: number;
   rel_name: string;
   rel_muscle_group: string | null;
@@ -28,7 +26,8 @@ export function exerciseResolvers(prisma: PrismaClient) {
 
       async exercise(_: unknown, args: { name: string }) {
         const rows = await prisma.$queryRawUnsafe<DBExercise[]>(
-          `SELECT id, name, muscle_group, notes FROM exercises WHERE name = '${args.name.replace(/'/g, "''")}'`
+          `SELECT id, name, muscle_group, notes FROM exercises WHERE name = ?`,
+          args.name
         );
         return rows.length > 0 ? toGql(rows[0]) : null;
       },
@@ -37,14 +36,12 @@ export function exerciseResolvers(prisma: PrismaClient) {
     Exercise: {
       async relatedExercises(exercise: { id: number }) {
         const rows = await prisma.$queryRawUnsafe<DBRelation[]>(`
-          SELECT er.exercise_id, er.related_exercise_id,
-                 e.id as rel_id, e.name as rel_name, e.muscle_group as rel_muscle_group, e.notes as rel_notes
+          SELECT e.id as rel_id, e.name as rel_name, e.muscle_group as rel_muscle_group, e.notes as rel_notes
           FROM exercise_relations er
           JOIN exercises e ON e.id = er.related_exercise_id
           WHERE er.exercise_id = ${exercise.id}
           UNION
-          SELECT er.exercise_id, er.related_exercise_id,
-                 e.id as rel_id, e.name as rel_name, e.muscle_group as rel_muscle_group, e.notes as rel_notes
+          SELECT e.id as rel_id, e.name as rel_name, e.muscle_group as rel_muscle_group, e.notes as rel_notes
           FROM exercise_relations er
           JOIN exercises e ON e.id = er.exercise_id
           WHERE er.related_exercise_id = ${exercise.id}
