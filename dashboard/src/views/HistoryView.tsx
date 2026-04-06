@@ -36,6 +36,11 @@ const query = graphql`
   }
 `;
 
+function fmtDate(d: string): string {
+  const [y, m, day] = d.split('-').map(Number);
+  return new Date(y, m - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 type Workout = HistoryViewQueryType['response']['workouts'][number];
 type Block = Workout['blocks'][number];
 type Round = Block['rounds'][number];
@@ -101,7 +106,7 @@ function WorkoutRow({ workout }: { workout: Workout }) {
         <div>
           <div style={{ fontWeight: 600, fontSize: 14 }}>{workout.name}</div>
           <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>
-            {workout.date} · {setCount} sets{workout.sleepHours != null && ` · 😴 ${workout.sleepHours}h`}
+            {fmtDate(workout.date)} · {setCount} sets{workout.sleepHours != null && ` · 😴 ${workout.sleepHours}h`}
           </div>
         </div>
         <span style={{ color: 'var(--text-3)', fontSize: 18, marginTop: 2 }}>{expanded ? '▲' : '▼'}</span>
