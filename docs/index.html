@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AC Logs — Workout tracking for Athletic Clubs members.</title>
+  <title>AC Logs — Track your lifts. Know your PRs.</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -11,6 +11,7 @@
       --bg: #000000;
       --card: #0f0f0f;
       --border: #222222;
+      --border-mid: #2e2e2e;
       --text-1: #ffffff;
       --text-2: #aaaaaa;
       --text-3: #555555;
@@ -29,7 +30,7 @@
     /* ── Topbar ── */
     .topbar {
       position: sticky; top: 0; z-index: 50;
-      background: #000000;
+      background: #000;
       border-bottom: 1px solid var(--border);
     }
     .topbar-inner {
@@ -39,7 +40,6 @@
     }
     .topbar-brand {
       font-size: 12px; font-weight: 900;
-      color: var(--text-1);
       letter-spacing: 0.18em; text-transform: uppercase;
     }
     .gh-link {
@@ -50,6 +50,7 @@
       transition: color 0.1s, border-color 0.1s;
     }
     .gh-link:hover { color: #fff; border-color: #555; }
+    .gh-link svg { width: 14px; height: 14px; }
 
     /* ── Hero ── */
     .hero {
@@ -61,128 +62,149 @@
       font-size: 10px; font-weight: 700; color: var(--text-3);
       letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 20px;
     }
-    .hero-title {
-      font-size: clamp(36px, 6vw, 72px);
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 68px);
       font-weight: 900; line-height: 1.0;
       text-transform: uppercase; letter-spacing: 0.02em;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .hero-sub {
-      font-size: 16px; color: var(--text-2); max-width: 480px;
-      line-height: 1.6; margin-bottom: 36px;
+      font-size: 15px; color: var(--text-2);
+      max-width: 440px; line-height: 1.7; margin-bottom: 40px;
     }
-    .hero-cta {
-      display: inline-block;
-      padding: 10px 24px;
-      background: #ffffff; color: #000000;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      transition: opacity 0.1s;
-    }
-    .hero-cta:hover { opacity: 0.85; }
 
-    /* ── Features ── */
-    .features {
-      max-width: 960px; margin: 0 auto;
-      padding: 64px 24px;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1px;
+    /* ── Terminal ── */
+    .terminal {
+      background: #0d0d0d; border: 1px solid var(--border-mid);
+      max-width: 580px;
+    }
+    .terminal-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: #111;
       border-bottom: 1px solid var(--border);
     }
-    .feature {
-      padding: 32px 28px;
-      border: 1px solid var(--border);
-      background: var(--card);
+    .tl { display: flex; gap: 6px; }
+    .tl span { width: 11px; height: 11px; border-radius: 50%; background: #333; }
+    .terminal-tab { font-size: 11px; color: var(--text-3); font-family: 'SF Mono', Menlo, monospace; }
+    .terminal-body {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px;
     }
-    .feature-label {
+    .terminal-prompt { color: #fff; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .terminal-cmd { color: #aaaaaa; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; flex: 1; }
+    .copy-btn {
+      background: none; border: 1px solid var(--border); color: var(--text-3);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 10px; cursor: pointer; flex-shrink: 0;
+      transition: color 0.1s, border-color 0.1s; font-family: inherit;
+    }
+    .copy-btn:hover { color: #fff; border-color: #555; }
+
+    /* ── Claude Code session ── */
+    .cc-session {
+      margin-top: 8px; max-width: 580px;
+      background: #0d0d0d; border: 1px solid var(--border-mid);
+      font-family: 'SF Mono', Menlo, monospace; font-size: 12px;
+    }
+    .cc-titlebar {
+      padding: 7px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text-3); font-size: 11px;
+    }
+    .cc-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+    .cc-user { display: flex; align-items: flex-start; gap: 8px; }
+    .cc-prompt-sym { color: #fff; font-weight: 700; flex-shrink: 0; }
+    .cc-user-text { color: #ffffff; }
+    .cc-response { color: var(--text-2); line-height: 1.65; padding-left: 18px; }
+    .cc-response strong { color: #ddd; font-weight: 600; }
+    .cc-footer {
+      padding: 7px 14px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between;
+    }
+    .cc-footer-left { color: var(--text-3); font-size: 11px; }
+    .cc-footer-right { color: #333; font-size: 11px; }
+    .cc-cursor {
+      display: inline-block; width: 7px; height: 12px;
+      background: #fff; vertical-align: middle; margin-left: 2px;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .terminal-sub { margin-top: 10px; font-size: 12px; color: var(--text-3); max-width: 580px; }
+    .terminal-sub em { font-style: normal; color: var(--text-2); }
+
+    /* ── Flow sections ── */
+    .flow-section { border-top: 1px solid var(--border); padding: 64px 0; }
+    .flow-inner {
+      max-width: 960px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 200px;
+      gap: 56px; align-items: start;
+    }
+    .flow-eyebrow {
       font-size: 9px; font-weight: 700; color: var(--text-3);
-      letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      margin-bottom: 12px;
     }
-    .feature-title {
-      font-size: 18px; font-weight: 800;
+    .flow-content h2 {
+      font-size: 22px; font-weight: 900;
       text-transform: uppercase; letter-spacing: 0.04em;
       margin-bottom: 10px;
     }
-    .feature-desc {
-      font-size: 13px; color: var(--text-2); line-height: 1.6;
+    .flow-content .lead {
+      font-size: 14px; color: var(--text-2);
+      line-height: 1.7; margin-bottom: 24px; max-width: 400px;
     }
 
-    /* ── Views section ── */
-    .views {
-      max-width: 960px; margin: 0 auto;
-      padding: 64px 24px;
-      border-bottom: 1px solid var(--border);
+    /* ── Chat bubbles ── */
+    .chat { display: flex; flex-direction: column; gap: 6px; max-width: 340px; }
+    .bubble {
+      max-width: 90%; padding: 9px 13px;
+      font-size: 13px; line-height: 1.55;
     }
-    .section-label {
-      font-size: 9px; font-weight: 700; color: var(--text-3);
-      letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 40px;
+    .bubble.user {
+      align-self: flex-end; background: #ffffff; color: #000000;
+      font-weight: 600;
     }
-    .view-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+    .bubble.claude {
+      align-self: flex-start; background: var(--card);
+      border: 1px solid var(--border-mid); color: var(--text-1);
     }
-    .view-card {
-      border: 1px solid var(--border); background: var(--card);
+    .subdued { color: var(--text-3); font-size: 12px; }
+    .highlight { color: #fff; font-weight: 700; }
+
+    /* ── Phone frame ── */
+    .phone-frame {
+      border: 1px solid var(--border-mid);
+      background: #000;
+      position: sticky; top: 64px;
     }
-    .view-screen {
-      aspect-ratio: 9/16; background: #000;
-      display: flex; align-items: center; justify-content: center;
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .view-screen img {
-      width: 100%; height: 100%; object-fit: cover; object-position: top;
-    }
-    .view-screen-placeholder {
-      font-size: 9px; font-weight: 700; color: var(--text-3);
+    .phone-frame img { width: 100%; display: block; }
+    .phone-label {
+      text-align: center; font-size: 9px; font-weight: 700;
+      color: var(--text-3); padding: 8px 0;
       letter-spacing: 0.12em; text-transform: uppercase;
+      border-top: 1px solid var(--border);
     }
-    .view-meta { padding: 16px 18px; }
-    .view-name {
-      font-size: 11px; font-weight: 800;
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
-    }
-    .view-desc { font-size: 12px; color: var(--text-2); }
 
-    /* ── Setup ── */
-    .setup {
-      max-width: 960px; margin: 0 auto;
-      padding: 64px 24px;
-      border-bottom: 1px solid var(--border);
+    /* ── Stat chips ── */
+    .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .stat {
+      padding: 5px 12px; border: 1px solid var(--border-mid);
+      font-size: 12px; font-weight: 700; font-family: 'SF Mono', Menlo, monospace;
     }
-    .setup-steps { margin-top: 32px; }
-    .setup-step {
-      display: flex; gap: 20px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .setup-step:last-child { border-bottom: none; }
-    .step-num {
-      font-size: 11px; font-weight: 700; color: var(--text-3);
-      letter-spacing: 0.1em; width: 24px; flex-shrink: 0; padding-top: 2px;
-    }
-    .step-body {}
-    .step-title {
-      font-size: 14px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
-    }
-    .step-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; }
-    .step-code {
-      margin-top: 10px;
-      background: #000; border: 1px solid var(--border);
-      padding: 10px 14px; font-family: 'SF Mono', Menlo, monospace;
-      font-size: 12px; color: #cccccc;
-    }
+    .stat span { color: var(--text-3); font-weight: 400; margin-right: 4px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
 
     /* ── Footer ── */
-    .footer {
-      max-width: 960px; margin: 0 auto;
-      padding: 32px 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 11px; color: var(--text-3);
-      letter-spacing: 0.06em;
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px; text-align: center;
     }
-    .footer-brand { font-weight: 700; text-transform: uppercase; }
+    footer p { font-size: 12px; color: var(--text-3); letter-spacing: 0.04em; }
+
+    @media (max-width: 640px) {
+      .flow-inner { grid-template-columns: 1fr; gap: 28px; }
+      .phone-frame { position: static; max-width: 240px; margin: 0 auto; }
+      .flow-visual { order: -1; }
+      .hero { padding: 56px 20px 48px; }
+    }
   </style>
 </head>
 <body>
@@ -191,114 +213,145 @@
   <header class="topbar">
     <div class="topbar-inner">
       <span class="topbar-brand">AC Logs</span>
-      <a class="gh-link" href="https://github.com/ayush29feb/gym">GitHub ↗</a>
+      <a class="gh-link" href="https://github.com/ayush29feb/gym" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        GitHub
+      </a>
     </div>
   </header>
 
   <!-- Hero -->
   <section class="hero">
     <div class="hero-eyebrow">Athletic Clubs · Personal Dashboard</div>
-    <h1 class="hero-title">Your lifts.<br>Your records.</h1>
+    <h1>Track your lifts.<br>Know your PRs.</h1>
     <p class="hero-sub">
-      A self-hosted workout dashboard built for Athletic Clubs members.
-      Track sessions, see PRs across rep ranges, and watch your strength trend over time — all from your phone.
+      A self-hosted workout dashboard for Athletic Clubs members. Log sessions, ask Claude what to lift, watch your strength compound over time.
     </p>
-    <a class="hero-cta" href="https://github.com/ayush29feb/gym">Get the code</a>
-  </section>
 
-  <!-- Features -->
-  <section class="features">
-    <div class="feature">
-      <div class="feature-label">History</div>
-      <div class="feature-title">Every session</div>
-      <p class="feature-desc">
-        All your workouts in chronological order. Expand any session to see every block and set. Filter by tags — upper, lower, APS, MPA — with multi-select intersection.
-      </p>
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="tl"><span></span><span></span><span></span></div>
+        <span class="terminal-tab">Terminal</span>
+      </div>
+      <div class="terminal-body">
+        <span class="terminal-prompt">$</span>
+        <span class="terminal-cmd" id="install-cmd">git clone https://github.com/ayush29feb/gym &amp;&amp; cd gym &amp;&amp; claude</span>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('git clone https://github.com/ayush29feb/gym && cd gym && claude');this.textContent='Copied'">Copy</button>
+      </div>
     </div>
-    <div class="feature">
-      <div class="feature-label">PRs</div>
-      <div class="feature-title">Personal records</div>
-      <p class="feature-desc">
-        1RM, 3RM, 5RM, and 8RM bests for every weighted exercise. Click any row to see your weight-over-time sparkline. Filtered by the same date range as everything else.
-      </p>
-    </div>
-    <div class="feature">
-      <div class="feature-label">Date range</div>
-      <div class="feature-title">Time-boxed</div>
-      <p class="feature-desc">
-        One date picker in the top-right corner filters all views simultaneously. See your last month of sessions, or your all-time PRs — one tap.
-      </p>
-    </div>
-  </section>
 
-  <!-- Views -->
-  <section class="views">
-    <div class="section-label">Dashboard views</div>
-    <div class="view-grid">
-      <div class="view-card">
-        <div class="view-screen">
-          <img src="images/history.jpg" alt="History view" />
+    <div class="cc-session">
+      <div class="cc-titlebar">── Claude Code ──</div>
+      <div class="cc-body">
+        <div class="cc-user">
+          <span class="cc-prompt-sym">&gt;</span>
+          <span class="cc-user-text">Set up AC Logs for the first time<span class="cc-cursor"></span></span>
         </div>
-        <div class="view-meta">
-          <div class="view-name">History</div>
-          <div class="view-desc">Sessions with expandable blocks and set chips.</div>
+        <div class="cc-response">
+          Installing dependencies, building server, generating types…<br>
+          <strong>✓ Ready.</strong> Both servers are running. Open the dashboard at your Tailscale IP.
         </div>
       </div>
-      <div class="view-card">
-        <div class="view-screen">
+      <div class="cc-footer">
+        <span class="cc-footer-left">Node 20+ required</span>
+        <span class="cc-footer-right">gym/</span>
+      </div>
+    </div>
+
+    <p class="terminal-sub" style="margin-top:14px">Then ask Claude to start the servers any time — from your Mac or phone.</p>
+  </section>
+
+  <!-- Flow 1: Before the gym -->
+  <section class="flow-section">
+    <div class="flow-inner">
+      <div class="flow-content">
+        <div class="flow-eyebrow">Before the gym</div>
+        <h2>Ask Claude what to lift</h2>
+        <p class="lead">
+          Claude knows your training history and your PRs. Ask it what weight to use today — it'll look at your last session for each lift and give you a target based on where you left off.
+        </p>
+        <div class="chat">
+          <div class="bubble user">What should I squat today? Working up to a heavy set of 3.</div>
+          <div class="bubble claude">
+            Your last 3RM was <span class="highlight">175 lbs</span> on Mar 17. You've hit 185 for a single. Try opening at 155 → 165 → <span class="highlight">175–180</span> for your top set. Push to 180 if it moves clean.
+          </div>
+          <div class="bubble user">And bench?</div>
+          <div class="bubble claude">
+            Last bench session was 125×3 at RPE 8. Same weight or +5 — <span class="highlight">130 lbs</span> for 3 if you're feeling good.
+          </div>
+        </div>
+      </div>
+      <div class="flow-visual">
+        <div class="phone-frame">
           <img src="images/prs.jpg" alt="PRs view" />
-        </div>
-        <div class="view-meta">
-          <div class="view-name">PRs</div>
-          <div class="view-desc">Best lifts per rep count, with sparkline on tap.</div>
+          <div class="phone-label">PRs view</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Setup -->
-  <section class="setup">
-    <div class="section-label">Setup</div>
-    <div class="setup-steps">
-      <div class="setup-step">
-        <div class="step-num">01</div>
-        <div class="step-body">
-          <div class="step-title">Clone and open in Claude Code</div>
-          <p class="step-desc">Clone the repo onto your Mac and open it in Claude Code.</p>
-          <div class="step-code">git clone https://github.com/ayush29feb/gym &amp;&amp; cd gym &amp;&amp; claude</div>
+  <!-- Flow 2: At the gym / logging -->
+  <section class="flow-section">
+    <div class="flow-inner">
+      <div class="flow-content">
+        <div class="flow-eyebrow">At the gym</div>
+        <h2>Log as you go</h2>
+        <p class="lead">
+          Write your workout in plain markdown during or after the session. Drop it in the <code style="font-family:monospace;font-size:12px;color:#aaa">workouts/</code> folder and run the import — Claude handles the rest.
+        </p>
+        <div class="chat">
+          <div class="bubble user">I just finished. Back squat 135×5, 155×3, 175×3 @8. Deadlift 225×3, 245×3, 260×1 @9.</div>
+          <div class="bubble claude">
+            Got it. That's a <span class="highlight">new deadlift 1RM</span> — 260 lbs. Adding it to your log now.
+            <br><br><span class="subdued">Importing workout · updating PRs…</span>
+          </div>
+          <div class="bubble claude">
+            ✓ Session saved. 2 PRs updated: Deadlift 1RM 260, Back Squat 3RM 175.
+          </div>
         </div>
       </div>
-      <div class="setup-step">
-        <div class="step-num">02</div>
-        <div class="step-body">
-          <div class="step-title">Ask Claude to set up</div>
-          <p class="step-desc">Claude runs the setup script, installs all dependencies, builds the server, and creates your database config.</p>
-          <div class="step-code">"Set up AC Logs for the first time"</div>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">03</div>
-        <div class="step-body">
-          <div class="step-title">Import your workouts</div>
-          <p class="step-desc">Add your workout markdown files to the <code style="font-family: monospace; font-size: 11px;">workouts/</code> directory and run the import script to populate the database.</p>
-          <div class="step-code">cd cli &amp;&amp; uv run python import_workouts.py</div>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">04</div>
-        <div class="step-body">
-          <div class="step-title">Open on your phone via Tailscale</div>
-          <p class="step-desc">Install Tailscale on your Mac and phone. Ask Claude for the URL and bookmark it.</p>
-          <div class="step-code">"Start the servers and give me the Tailscale URL"</div>
+      <div class="flow-visual">
+        <div class="phone-frame">
+          <img src="images/history.jpg" alt="History view" />
+          <div class="phone-label">History view</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <span class="footer-brand">AC Logs</span>
-    <span>Built for Athletic Clubs members</span>
+  <!-- Flow 3: PRs + insights -->
+  <section class="flow-section">
+    <div class="flow-inner">
+      <div class="flow-content">
+        <div class="flow-eyebrow">Over time</div>
+        <h2>Watch your strength compound</h2>
+        <p class="lead">
+          Every session feeds into your PR table. Filter by date range to see how you've progressed over the last month or year. Tap any lift to see your weight-over-time chart.
+        </p>
+        <div class="stats">
+          <div class="stat"><span>Deadlift 1RM</span>260 lbs</div>
+          <div class="stat"><span>Squat 3RM</span>175 lbs</div>
+          <div class="stat"><span>Bench 5RM</span>115 lbs</div>
+          <div class="stat"><span>Pull-ups 3RM</span>+35 lbs</div>
+        </div>
+        <div class="chat" style="margin-top:20px">
+          <div class="bubble user">How has my deadlift progressed this year?</div>
+          <div class="bubble claude">
+            January: 225 for 3. Now you're pulling 260 for a single — roughly <span class="highlight">+15% in 3 months</span>. Your 3RM jumped from 215 to 245. Strong trend.
+          </div>
+        </div>
+      </div>
+      <div class="flow-visual">
+        <div class="phone-frame">
+          <img src="images/prs.jpg" alt="PRs view" />
+          <div class="phone-label">PRs · 3M</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>AC Logs &nbsp;·&nbsp; Built for Athletic Clubs members &nbsp;·&nbsp; <a href="https://github.com/ayush29feb/gym" style="color:var(--text-2)">GitHub</a></p>
   </footer>
 
 </body>
