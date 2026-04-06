@@ -88,7 +88,7 @@ function PrTable() {
   const accessories = rows.filter((r) => !r.isCompound);
 
   const thStyle: React.CSSProperties = {
-    padding: '10px 10px', fontSize: 9, fontWeight: 700, color: '#444444',
+    padding: '10px 10px', fontSize: 9, fontWeight: 700, color: '#777777',
     textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.14em',
     borderBottom: '1px solid #222222', whiteSpace: 'nowrap',
   };

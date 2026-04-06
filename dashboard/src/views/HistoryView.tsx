@@ -73,7 +73,7 @@ function BlockSection({ block }: { block: Block }) {
 
   return (
     <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #1e1e1e' }}>
-      <div style={{ fontSize: 9, fontWeight: 700, color: '#444444', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 8 }}>
+      <div style={{ fontSize: 9, fontWeight: 700, color: '#777777', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 8 }}>
         {block.name}
       </div>
       {exerciseOrder.map((name) => {
@@ -81,8 +81,8 @@ function BlockSection({ block }: { block: Block }) {
         const chips = sets.map(formatSetChip);
         return (
           <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '3px 0', gap: 12 }}>
-            <span style={{ color: '#cccccc', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>{name}</span>
-            <span style={{ color: '#666666', fontSize: 12, textAlign: 'right', fontVariantNumeric: 'tabular-nums', letterSpacing: '0.03em' }}>{chips.join('  ·  ')}</span>
+            <span style={{ color: '#dddddd', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>{name}</span>
+            <span style={{ color: '#999999', fontSize: 12, textAlign: 'right', fontVariantNumeric: 'tabular-nums', letterSpacing: '0.03em' }}>{chips.join('  ·  ')}</span>
           </div>
         );
       })}
@@ -105,11 +105,11 @@ function WorkoutRow({ workout }: { workout: Workout }) {
       >
         <div style={{ minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffffff' }}>{workout.name}</div>
-          <div style={{ fontSize: 11, color: '#555555', marginTop: 4, letterSpacing: '0.04em' }}>
-            {fmtDate(workout.date)}<span style={{ margin: '0 6px', color: '#333' }}>·</span>{setCount} sets{workout.sleepHours != null && <><span style={{ margin: '0 6px', color: '#333' }}>·</span>{workout.sleepHours}h sleep</>}
+          <div style={{ fontSize: 11, color: '#888888', marginTop: 4, letterSpacing: '0.04em' }}>
+            {fmtDate(workout.date)}<span style={{ margin: '0 6px', color: '#555' }}>·</span>{setCount} sets{workout.sleepHours != null && <><span style={{ margin: '0 6px', color: '#555' }}>·</span>{workout.sleepHours}h sleep</>}
           </div>
         </div>
-        <span style={{ color: '#444444', fontSize: 10, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
+        <span style={{ color: '#666666', fontSize: 10, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
       </button>
       {expanded && (
         <div style={{ paddingBottom: 16 }}>
