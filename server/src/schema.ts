@@ -5,7 +5,7 @@ export const typeDefs = /* GraphQL */ `
     exercises: [Exercise!]!
     exercise(name: String!): Exercise
     progress(exerciseName: String!, related: Boolean): Progress!
-    exercisePrs: [ExercisePrRow!]!
+    exercisePrs(since: String): [ExercisePrRow!]!
   }
 
   type ExercisePrRow {

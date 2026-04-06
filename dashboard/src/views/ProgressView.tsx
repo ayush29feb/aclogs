@@ -4,8 +4,8 @@ import type { ProgressViewPrsQuery as PrsQueryType } from './__generated__/Progr
 import type { ProgressViewHistoryQuery as HistoryQueryType } from './__generated__/ProgressViewHistoryQuery.graphql.js';
 
 const prsQuery = graphql`
-  query ProgressViewPrsQuery {
-    exercisePrs {
+  query ProgressViewPrsQuery($since: String) {
+    exercisePrs(since: $since) {
       exerciseName
       isCompound
       pr1
@@ -79,8 +79,8 @@ function Sparkline({ exerciseName }: { exerciseName: string }) {
   );
 }
 
-function PrTable() {
-  const data = useLazyLoadQuery<PrsQueryType>(prsQuery, {});
+function PrTable({ since }: { since: string | null }) {
+  const data = useLazyLoadQuery<PrsQueryType>(prsQuery, { since: since ?? undefined }, { fetchPolicy: 'network-only' });
   const rows = data.exercisePrs;
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -157,12 +157,40 @@ function PrTable() {
   );
 }
 
+const DATE_RANGES: { label: string; months: number | null }[] = [
+  { label: '1M', months: 1 },
+  { label: '3M', months: 3 },
+  { label: '6M', months: 6 },
+  { label: '1Y', months: 12 },
+  { label: 'All', months: null },
+];
+
+function sinceDate(months: number): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() - months);
+  return d.toISOString().slice(0, 10);
+}
+
 export default function ProgressView() {
+  const [range, setRange] = useState<number | null>(null);
+  const since = range != null ? sinceDate(range) : null;
+
   return (
-    <div style={{ paddingTop: 16 }}>
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+    <div style={{ paddingTop: 12 }}>
+      <div className="tag-row" style={{ marginBottom: 16 }}>
+        {DATE_RANGES.map(({ label, months }) => (
+          <button
+            key={label}
+            className={`tag-btn${range === months ? ' active' : ''}`}
+            onClick={() => setRange(months)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div style={{ borderTop: '1px solid #1e1e1e', overflowX: 'auto' }}>
         <Suspense fallback={<p style={{ textAlign: 'center', color: 'var(--text-3)', padding: 32 }}>Loading…</p>}>
-          <PrTable />
+          <PrTable since={since} />
         </Suspense>
       </div>
     </div>

@@ -5,7 +5,7 @@ import ProgressView from './views/ProgressView.js';
 
 const NAV = [
   { to: '/history',  icon: '▤', label: 'History'  },
-  { to: '/progress', icon: '↑', label: 'Progress' },
+  { to: '/progress', icon: '↑', label: 'PRs' },
 ];
 
 export default function App() {

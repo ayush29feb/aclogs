@@ -84,12 +84,15 @@ export function progressResolvers(prisma: PrismaClient) {
         return { exerciseName: args.exerciseName, prs, history };
       },
 
-      async exercisePrs() {
+      async exercisePrs(_: unknown, args: { since?: string }) {
+        const sinceClause = args.since ? `AND w.date >= '${args.since}'` : '';
         const rows = await prisma.$queryRawUnsafe<{ name: string; reps: number; max_weight: number }[]>(`
           SELECT e.name, s.reps, MAX(s.weight_lbs) as max_weight
           FROM sets s
           JOIN exercises e ON e.id = s.exercise_id
-          WHERE s.reps IN (1, 3, 5, 8) AND s.weight_lbs IS NOT NULL
+          JOIN blocks b ON b.id = s.block_id
+          JOIN workouts w ON w.id = b.workout_id
+          WHERE s.reps IN (1, 3, 5, 8) AND s.weight_lbs IS NOT NULL ${sinceClause}
           GROUP BY e.id, s.reps
           ORDER BY e.name, s.reps
         `);
