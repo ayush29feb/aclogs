@@ -41,48 +41,46 @@ type Block = Workout['blocks'][number];
 type Round = Block['rounds'][number];
 type Set = Round['sets'][number];
 
-function formatSet(s: Set): string {
-  const parts: string[] = [];
-  if (s.weightLbs != null && s.reps != null) parts.push(`${s.weightLbs} lbs × ${s.reps}`);
-  else if (s.reps != null) parts.push(`${s.reps} reps`);
-  else if (s.weightLbs != null) parts.push(`${s.weightLbs} lbs`);
-  if (s.rpe != null) parts.push(`@${s.rpe}`);
-  if (s.durationSecs != null) parts.push(`${Math.round(s.durationSecs / 60)}min`);
-  if (s.distanceM != null) parts.push(`${(s.distanceM / 1000).toFixed(1)}km`);
-  if (s.calories != null) parts.push(`${s.calories}cal`);
-  if (s.watts != null) parts.push(`${s.watts}W`);
-  return parts.join(' · ') || '—';
-}
-
-function RoundRow({ round, showRoundLabel }: { round: Round; showRoundLabel: boolean }) {
-  return (
-    <div style={{ marginBottom: 6 }}>
-      {showRoundLabel && (
-        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-3)', marginBottom: 2 }}>
-          Round {round.round}
-        </div>
-      )}
-      {round.sets.map((s) => (
-        <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '2px 0', color: 'var(--text-2)' }}>
-          <span style={{ fontWeight: 500, color: 'var(--text-1)' }}>{s.exerciseName}</span>
-          <span>{formatSet(s)}</span>
-        </div>
-      ))}
-    </div>
-  );
+function formatSetChip(s: Set): string {
+  if (s.weightLbs != null && s.reps != null) return `${s.weightLbs}×${s.reps}`;
+  if (s.reps != null) return `×${s.reps}`;
+  if (s.weightLbs != null) return `${s.weightLbs} lbs`;
+  if (s.watts != null) return `${s.watts}W`;
+  if (s.calories != null) return `${s.calories}cal`;
+  if (s.durationSecs != null) return `${Math.round(s.durationSecs / 60)}min`;
+  if (s.distanceM != null) return `${(s.distanceM / 1000).toFixed(1)}km`;
+  return '—';
 }
 
 function BlockSection({ block }: { block: Block }) {
-  const showRoundLabels = block.rounds.length > 1;
+  // Flatten all sets across rounds, grouped by exercise name in order of first appearance
+  const exerciseOrder: string[] = [];
+  const bySets = new Map<string, Set[]>();
+  for (const r of block.rounds) {
+    for (const s of r.sets) {
+      if (!bySets.has(s.exerciseName)) {
+        exerciseOrder.push(s.exerciseName);
+        bySets.set(s.exerciseName, []);
+      }
+      bySets.get(s.exerciseName)!.push(s);
+    }
+  }
+
   return (
-    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border-light)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-1)' }}>{block.name}</span>
-        {block.scheme && <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{block.scheme}</span>}
+    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-light)' }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 6 }}>
+        {block.name}
       </div>
-      {block.rounds.map((r) => (
-        <RoundRow key={r.round} round={r} showRoundLabel={showRoundLabels} />
-      ))}
+      {exerciseOrder.map((name) => {
+        const sets = bySets.get(name)!;
+        const chips = sets.map(formatSetChip);
+        return (
+          <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 13, padding: '2px 0', gap: 8 }}>
+            <span style={{ color: 'var(--text-1)', fontWeight: 500, flexShrink: 0 }}>{name}</span>
+            <span style={{ color: 'var(--text-3)', fontSize: 12, textAlign: 'right' }}>{chips.join('  ')}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -101,16 +99,10 @@ function WorkoutRow({ workout }: { workout: Workout }) {
         onClick={() => setExpanded(!expanded)}
       >
         <div>
-          <div style={{ fontWeight: 600, fontSize: 15 }}>{workout.name}</div>
+          <div style={{ fontWeight: 600, fontSize: 14 }}>{workout.name}</div>
           <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>
-            {workout.date} · {setCount} sets
-            {workout.sleepHours != null && ` · 😴 ${workout.sleepHours}h`}
+            {workout.date} · {setCount} sets{workout.sleepHours != null && ` · 😴 ${workout.sleepHours}h`}
           </div>
-          {workout.tags.length > 0 && (
-            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 6 }}>
-              {workout.tags.map((t) => <span key={t} className="tag">{t}</span>)}
-            </div>
-          )}
         </div>
         <span style={{ color: 'var(--text-3)', fontSize: 18, marginTop: 2 }}>{expanded ? '▲' : '▼'}</span>
       </button>
