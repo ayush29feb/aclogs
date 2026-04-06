@@ -134,16 +134,20 @@ async function fetchBlocksWithSets(prisma: PrismaClient, workoutIds: number[]) {
 export function workoutResolvers(prisma: PrismaClient) {
   return {
     Query: {
-      async workouts(_: unknown, args: { limit?: number; tag?: string; since?: string }) {
+      async workouts(_: unknown, args: { limit?: number; tags?: string[]; since?: string }) {
         const limit = args.limit ?? 20;
         const sinceClause = args.since ? `AND date >= '${args.since}'` : '';
         const rows = await prisma.$queryRawUnsafe<DBWorkout[]>(
           `SELECT id, name, CAST(date AS TEXT) as date, sleep_hours, tags, notes, photo_path FROM workouts WHERE 1=1 ${sinceClause} ORDER BY date DESC LIMIT ${limit}`
         );
         let filtered = rows;
-        if (args.tag) {
+        if (args.tags && args.tags.length > 0) {
+          const activeTags = args.tags;
           filtered = rows.filter((r) => {
-            try { return (JSON.parse(r.tags ?? '[]') as string[]).includes(args.tag!); } catch { return false; }
+            try {
+              const wTags = JSON.parse(r.tags ?? '[]') as string[];
+              return activeTags.some(t => wTags.includes(t));
+            } catch { return false; }
           });
         }
         const ids = filtered.map((r) => Number(r.id));

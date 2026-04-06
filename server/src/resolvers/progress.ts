@@ -86,19 +86,33 @@ export function progressResolvers(prisma: PrismaClient) {
 
       async exercisePrs(_: unknown, args: { since?: string }) {
         const sinceClause = args.since ? `AND w.date >= '${args.since}'` : '';
-        const rows = await prisma.$queryRawUnsafe<{ name: string; reps: number; max_weight: number }[]>(`
-          SELECT e.name, s.reps, MAX(s.weight_lbs) as max_weight
-          FROM sets s
-          JOIN exercises e ON e.id = s.exercise_id
-          JOIN blocks b ON b.id = s.block_id
-          JOIN workouts w ON w.id = b.workout_id
-          WHERE s.reps IN (1, 3, 5, 8) AND s.weight_lbs IS NOT NULL ${sinceClause}
-          GROUP BY e.id, s.reps
-          ORDER BY e.name, s.reps
-        `);
+        const [prRows, countRows] = await Promise.all([
+          prisma.$queryRawUnsafe<{ name: string; reps: number; max_weight: number }[]>(`
+            SELECT e.name, s.reps, MAX(s.weight_lbs) as max_weight
+            FROM sets s
+            JOIN exercises e ON e.id = s.exercise_id
+            JOIN blocks b ON b.id = s.block_id
+            JOIN workouts w ON w.id = b.workout_id
+            WHERE s.reps IN (1, 3, 5, 8) AND s.weight_lbs IS NOT NULL ${sinceClause}
+            GROUP BY e.id, s.reps
+            ORDER BY e.name, s.reps
+          `),
+          prisma.$queryRawUnsafe<{ name: string; workout_count: number }[]>(`
+            SELECT e.name, COUNT(DISTINCT w.id) as workout_count
+            FROM sets s
+            JOIN exercises e ON e.id = s.exercise_id
+            JOIN blocks b ON b.id = s.block_id
+            JOIN workouts w ON w.id = b.workout_id
+            WHERE s.weight_lbs IS NOT NULL ${sinceClause}
+            GROUP BY e.id
+          `),
+        ]);
+
+        const workoutCounts = new Map<string, number>();
+        for (const r of countRows) workoutCounts.set(r.name, Number(r.workout_count));
 
         const byExercise = new Map<string, { pr1?: number; pr3?: number; pr5?: number; pr8?: number }>();
-        for (const row of rows) {
+        for (const row of prRows) {
           if (!byExercise.has(row.name)) byExercise.set(row.name, {});
           const entry = byExercise.get(row.name)!;
           const reps = Number(row.reps);
@@ -110,12 +124,34 @@ export function progressResolvers(prisma: PrismaClient) {
         }
 
         return Array.from(byExercise.entries())
-          .map(([name, prs]) => ({ exerciseName: name, isCompound: COMPOUNDS.has(name), ...prs }))
+          .map(([name, prs]) => ({
+            exerciseName: name,
+            isCompound: COMPOUNDS.has(name),
+            workoutCount: workoutCounts.get(name) ?? 0,
+            ...prs,
+          }))
           .sort((a, b) => {
             if (a.isCompound && !b.isCompound) return -1;
             if (!a.isCompound && b.isCompound) return 1;
             return a.exerciseName.localeCompare(b.exerciseName);
           });
+      },
+
+      async tagCounts(_: unknown, args: { since?: string }) {
+        const sinceClause = args.since ? `WHERE date >= '${args.since}'` : '';
+        const rows = await prisma.$queryRawUnsafe<{ tags: string | null }[]>(
+          `SELECT tags FROM workouts ${sinceClause}`
+        );
+        const counts = new Map<string, number>();
+        for (const row of rows) {
+          try {
+            const tags = JSON.parse(row.tags ?? '[]') as string[];
+            for (const tag of tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+          } catch {}
+        }
+        return Array.from(counts.entries())
+          .sort(([, a], [, b]) => b - a)
+          .map(([tag, count]) => ({ tag, count }));
       },
     },
   };

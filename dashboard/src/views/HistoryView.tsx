@@ -1,11 +1,12 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useState } from 'react';
 import type { HistoryViewQuery as HistoryViewQueryType } from './__generated__/HistoryViewQuery.graphql.js';
+import type { HistoryViewTagCountsQuery as TagCountsQueryType } from './__generated__/HistoryViewTagCountsQuery.graphql.js';
 import { useDateRange } from '../DateRangeContext.js';
 
 const query = graphql`
-  query HistoryViewQuery($limit: Int, $tag: String, $since: String) {
-    workouts(limit: $limit, tag: $tag, since: $since) {
+  query HistoryViewQuery($limit: Int, $tags: [String!], $since: String) {
+    workouts(limit: $limit, tags: $tags, since: $since) {
       id
       name
       date
@@ -37,6 +38,15 @@ const query = graphql`
   }
 `;
 
+const tagCountsQuery = graphql`
+  query HistoryViewTagCountsQuery($since: String) {
+    tagCounts(since: $since) {
+      tag
+      count
+    }
+  }
+`;
+
 function fmtDate(d: string): string {
   const [y, m, day] = d.split('-').map(Number);
   return new Date(y, m - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -45,9 +55,9 @@ function fmtDate(d: string): string {
 type Workout = HistoryViewQueryType['response']['workouts'][number];
 type Block = Workout['blocks'][number];
 type Round = Block['rounds'][number];
-type Set = Round['sets'][number];
+type WorkoutSet = Round['sets'][number];
 
-function formatSetChip(s: Set): string {
+function formatSetChip(s: WorkoutSet): string {
   if (s.weightLbs != null && s.reps != null) return `${s.weightLbs}×${s.reps}`;
   if (s.reps != null) return `×${s.reps}`;
   if (s.weightLbs != null) return `${s.weightLbs} lbs`;
@@ -59,9 +69,8 @@ function formatSetChip(s: Set): string {
 }
 
 function BlockSection({ block }: { block: Block }) {
-  // Flatten all sets across rounds, grouped by exercise name in order of first appearance
   const exerciseOrder: string[] = [];
-  const bySets = new Map<string, Set[]>();
+  const bySets = new Map<string, WorkoutSet[]>();
   for (const r of block.rounds) {
     for (const s of r.sets) {
       if (!bySets.has(s.exerciseName)) {
@@ -124,12 +133,47 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 }
 
-const QUICK_TAGS = ['upper', 'lower', 'aps', 'mpa', 'test'];
-
-function HistoryContent({ tag }: { tag: string | null }) {
+function TagPills({ activeTags, onToggle, onClear }: {
+  activeTags: globalThis.Set<string>;
+  onToggle: (t: string) => void;
+  onClear: () => void;
+}) {
   const { since } = useDateRange();
-  const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 50, tag, since }, { fetchPolicy: 'network-only' });
-  const workouts = data.workouts;
+  const data = useLazyLoadQuery<TagCountsQueryType>(tagCountsQuery, { since }, { fetchPolicy: 'network-only' });
+  const counts = data.tagCounts;
+  const allActive = activeTags.size === 0;
+
+  return (
+    <div className="tag-row">
+      <button className={`tag-btn${allActive ? ' active' : ''}`} onClick={onClear}>All</button>
+      {counts.map(({ tag, count }) => {
+        const isActive = activeTags.has(tag);
+        return (
+          <button
+            key={tag}
+            className={`tag-btn${isActive ? ' active' : ''}`}
+            onClick={() => onToggle(tag)}
+          >
+            {tag} <span style={{ opacity: isActive ? 0.6 : 0.5, fontWeight: 400, marginLeft: 2 }}>{count}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function HistoryContent({ activeTags }: { activeTags: globalThis.Set<string> }) {
+  const { since } = useDateRange();
+  const tagList = activeTags.size > 0 ? (Array.from(activeTags) as string[]) : null;
+  // Fetch all workouts (or filtered by since), then intersect client-side
+  const data = useLazyLoadQuery<HistoryViewQueryType>(query, { limit: 200, since }, { fetchPolicy: 'network-only' });
+  const all = data.workouts;
+  const workouts = tagList
+    ? all.filter(w => {
+        const wTags = w.tags as string[];
+        return tagList.every(t => wTags.includes(t));
+      })
+    : all;
 
   if (workouts.length === 0) {
     return <p style={{ textAlign: 'center', color: 'var(--text-3)', marginTop: 32 }}>No workouts found.</p>;
@@ -143,28 +187,25 @@ function HistoryContent({ tag }: { tag: string | null }) {
 }
 
 export default function HistoryView() {
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [activeTags, setActiveTags] = useState<globalThis.Set<string>>(new globalThis.Set());
+
+  function toggleTag(tag: string) {
+    setActiveTags((prev: globalThis.Set<string>) => {
+      const next = new globalThis.Set(prev);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
+      return next;
+    });
+  }
+
+  function clearTags() {
+    setActiveTags(new globalThis.Set());
+  }
 
   return (
     <div style={{ paddingTop: 12 }}>
-      <div className="tag-row">
-        <button
-          className={`tag-btn${activeTag === null ? ' active' : ''}`}
-          onClick={() => setActiveTag(null)}
-        >
-          All
-        </button>
-        {QUICK_TAGS.map((t) => (
-          <button
-            key={t}
-            className={`tag-btn${activeTag === t ? ' active' : ''}`}
-            onClick={() => setActiveTag(activeTag === t ? null : t)}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-      <HistoryContent tag={activeTag} />
+      <TagPills activeTags={activeTags} onToggle={toggleTag} onClear={clearTags} />
+      <HistoryContent activeTags={activeTags} />
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function App() {
     <DateRangeContext.Provider value={{ range, setRange, since }}>
       <header className="topbar">
         <div className="topbar-inner">
-          <span className="topbar-brand">Gym Log</span>
+          <span className="topbar-brand">AC Logs</span>
           <div style={{ display: 'flex', gap: 2 }}>
             {DATE_RANGES.map(({ label, months }) => (
               <button

@@ -1,16 +1,23 @@
 export const typeDefs = /* GraphQL */ `
   type Query {
-    workouts(limit: Int, tag: String, since: String): [Workout!]!
+    workouts(limit: Int, tags: [String!], since: String): [Workout!]!
     workout(id: Int!): Workout
     exercises: [Exercise!]!
     exercise(name: String!): Exercise
     progress(exerciseName: String!, related: Boolean): Progress!
     exercisePrs(since: String): [ExercisePrRow!]!
+    tagCounts(since: String): [TagCount!]!
+  }
+
+  type TagCount {
+    tag: String!
+    count: Int!
   }
 
   type ExercisePrRow {
     exerciseName: String!
     isCompound: Boolean!
+    workoutCount: Int!
     pr1: Float
     pr3: Float
     pr5: Float

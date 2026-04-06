@@ -9,6 +9,7 @@ const prsQuery = graphql`
     exercisePrs(since: $since) {
       exerciseName
       isCompound
+      workoutCount
       pr1
       pr3
       pr5
@@ -102,6 +103,11 @@ function PrTable({ since }: { since: string | null }) {
     textTransform: 'uppercase', letterSpacing: '0.04em',
   };
 
+  const countTdStyle: React.CSSProperties = {
+    padding: '10px 10px', fontSize: 11, textAlign: 'right', color: '#555555',
+    fontVariantNumeric: 'tabular-nums',
+  };
+
   const renderRow = (row: PrRow) => {
     const isSelected = selected === row.exerciseName;
     return (
@@ -112,6 +118,7 @@ function PrTable({ since }: { since: string | null }) {
           style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', background: isSelected ? '#1a1a1a' : undefined }}
         >
           <td style={nameTdStyle}>{row.exerciseName}</td>
+          <td style={countTdStyle}>{row.workoutCount}</td>
           <td style={tdStyle}>{fmt(row.pr1)}</td>
           <td style={tdStyle}>{fmt(row.pr3)}</td>
           <td style={tdStyle}>{fmt(row.pr5)}</td>
@@ -119,7 +126,7 @@ function PrTable({ since }: { since: string | null }) {
         </tr>
         {isSelected && (
           <tr key={`${row.exerciseName}-detail`}>
-            <td colSpan={5} style={{ padding: '0 8px 12px', background: '#1a1a1a' }}>
+            <td colSpan={6} style={{ padding: '0 8px 12px', background: '#1a1a1a' }}>
               <Suspense fallback={<p style={{ fontSize: 12, color: 'var(--text-3)', margin: '8px 0' }}>Loading…</p>}>
                 <Sparkline exerciseName={row.exerciseName} />
               </Suspense>
@@ -136,6 +143,7 @@ function PrTable({ since }: { since: string | null }) {
         <thead>
           <tr>
             <th style={{ ...thStyle, textAlign: 'left' }}>Exercise</th>
+            <th style={thStyle}>#</th>
             <th style={thStyle}>1RM</th>
             <th style={thStyle}>3RM</th>
             <th style={thStyle}>5RM</th>
@@ -146,7 +154,7 @@ function PrTable({ since }: { since: string | null }) {
           {compounds.map(renderRow)}
           {accessories.length > 0 && (
             <tr>
-              <td colSpan={5} style={{ padding: '12px 10px 4px', fontSize: 10, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              <td colSpan={6} style={{ padding: '12px 10px 4px', fontSize: 10, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 Accessories
               </td>
             </tr>
