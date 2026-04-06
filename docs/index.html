@@ -38,10 +38,7 @@
       display: flex; align-items: center; justify-content: space-between;
       height: 48px; padding: 0 24px;
     }
-    .topbar-brand {
-      font-size: 12px; font-weight: 900;
-      letter-spacing: 0.18em; text-transform: uppercase;
-    }
+    .topbar-brand { font-size: 12px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; }
     .gh-link {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 11px; font-weight: 700; color: var(--text-2);
@@ -58,38 +55,24 @@
       padding: 80px 24px 64px;
       border-bottom: 1px solid var(--border);
     }
-    .hero-eyebrow {
-      font-size: 10px; font-weight: 700; color: var(--text-3);
-      letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 20px;
-    }
+    .hero-eyebrow { font-size: 10px; font-weight: 700; color: var(--text-3); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 20px; }
     .hero h1 {
       font-size: clamp(36px, 6vw, 68px);
       font-weight: 900; line-height: 1.0;
-      text-transform: uppercase; letter-spacing: 0.02em;
-      margin-bottom: 20px;
+      text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 20px;
     }
-    .hero-sub {
-      font-size: 15px; color: var(--text-2);
-      max-width: 440px; line-height: 1.7; margin-bottom: 40px;
-    }
+    .hero-sub { font-size: 15px; color: var(--text-2); max-width: 440px; line-height: 1.7; margin-bottom: 40px; }
 
     /* ── Terminal ── */
-    .terminal {
-      background: #0d0d0d; border: 1px solid var(--border-mid);
-      max-width: 580px;
-    }
+    .terminal { background: #0d0d0d; border: 1px solid var(--border-mid); max-width: 560px; }
     .terminal-header {
       display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; background: #111;
-      border-bottom: 1px solid var(--border);
+      padding: 10px 14px; background: #111; border-bottom: 1px solid var(--border);
     }
     .tl { display: flex; gap: 6px; }
     .tl span { width: 11px; height: 11px; border-radius: 50%; background: #333; }
     .terminal-tab { font-size: 11px; color: var(--text-3); font-family: 'SF Mono', Menlo, monospace; }
-    .terminal-body {
-      display: flex; align-items: center; gap: 10px;
-      padding: 14px 18px;
-    }
+    .terminal-body { display: flex; align-items: center; gap: 10px; padding: 14px 18px; }
     .terminal-prompt { color: #fff; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; font-weight: 700; flex-shrink: 0; }
     .terminal-cmd { color: #aaaaaa; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; flex: 1; }
     .copy-btn {
@@ -102,24 +85,18 @@
 
     /* ── Claude Code session ── */
     .cc-session {
-      margin-top: 8px; max-width: 580px;
+      margin-top: 8px; max-width: 560px;
       background: #0d0d0d; border: 1px solid var(--border-mid);
       font-family: 'SF Mono', Menlo, monospace; font-size: 12px;
     }
-    .cc-titlebar {
-      padding: 7px 14px; border-bottom: 1px solid var(--border);
-      color: var(--text-3); font-size: 11px;
-    }
+    .cc-titlebar { padding: 7px 14px; border-bottom: 1px solid var(--border); color: var(--text-3); font-size: 11px; }
     .cc-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
     .cc-user { display: flex; align-items: flex-start; gap: 8px; }
     .cc-prompt-sym { color: #fff; font-weight: 700; flex-shrink: 0; }
     .cc-user-text { color: #ffffff; }
     .cc-response { color: var(--text-2); line-height: 1.65; padding-left: 18px; }
-    .cc-response strong { color: #ddd; font-weight: 600; }
-    .cc-footer {
-      padding: 7px 14px; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between;
-    }
+    .cc-response strong { color: #ddd; }
+    .cc-footer { padding: 7px 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; }
     .cc-footer-left { color: var(--text-3); font-size: 11px; }
     .cc-footer-right { color: #333; font-size: 11px; }
     .cc-cursor {
@@ -128,7 +105,7 @@
       animation: blink 1.1s step-end infinite;
     }
     @keyframes blink { 50% { opacity: 0; } }
-    .terminal-sub { margin-top: 10px; font-size: 12px; color: var(--text-3); max-width: 580px; }
+    .terminal-sub { margin-top: 12px; font-size: 12px; color: var(--text-3); max-width: 560px; }
     .terminal-sub em { font-style: normal; color: var(--text-2); }
 
     /* ── Flow sections ── */
@@ -138,78 +115,48 @@
       display: grid; grid-template-columns: 1fr 200px;
       gap: 56px; align-items: start;
     }
-    .flow-eyebrow {
-      font-size: 9px; font-weight: 700; color: var(--text-3);
-      letter-spacing: 0.16em; text-transform: uppercase;
-      margin-bottom: 12px;
+    .flow-inner-solo {
+      grid-template-columns: 1fr;
+      max-width: 640px;
     }
-    .flow-content h2 {
-      font-size: 22px; font-weight: 900;
-      text-transform: uppercase; letter-spacing: 0.04em;
-      margin-bottom: 10px;
-    }
-    .flow-content .lead {
-      font-size: 14px; color: var(--text-2);
-      line-height: 1.7; margin-bottom: 24px; max-width: 400px;
-    }
+    .flow-eyebrow { font-size: 9px; font-weight: 700; color: var(--text-3); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+    .flow-content h2 { font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
+    .flow-content .lead { font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 24px; max-width: 400px; }
 
     /* ── Chat bubbles ── */
-    .chat { display: flex; flex-direction: column; gap: 6px; max-width: 340px; }
-    .bubble {
-      max-width: 90%; padding: 9px 13px;
-      font-size: 13px; line-height: 1.55;
-    }
-    .bubble.user {
-      align-self: flex-end; background: #ffffff; color: #000000;
-      font-weight: 600;
-    }
-    .bubble.claude {
-      align-self: flex-start; background: var(--card);
-      border: 1px solid var(--border-mid); color: var(--text-1);
-    }
+    .chat { display: flex; flex-direction: column; gap: 6px; max-width: 360px; }
+    .bubble { max-width: 90%; padding: 9px 13px; font-size: 13px; line-height: 1.55; }
+    .bubble.user { align-self: flex-end; background: #ffffff; color: #000000; font-weight: 600; }
+    .bubble.claude { align-self: flex-start; background: var(--card); border: 1px solid var(--border-mid); color: var(--text-1); }
     .subdued { color: var(--text-3); font-size: 12px; }
-    .highlight { color: #fff; font-weight: 700; }
+    .hi { color: #fff; font-weight: 700; }
 
     /* ── Phone frame ── */
-    .phone-frame {
-      border: 1px solid var(--border-mid);
-      background: #000;
-      position: sticky; top: 64px;
-    }
+    .phone-frame { border: 1px solid var(--border-mid); background: #000; position: sticky; top: 64px; }
     .phone-frame img { width: 100%; display: block; }
-    .phone-label {
-      text-align: center; font-size: 9px; font-weight: 700;
-      color: var(--text-3); padding: 8px 0;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      border-top: 1px solid var(--border);
-    }
+    .phone-label { text-align: center; font-size: 9px; font-weight: 700; color: var(--text-3); padding: 8px 0; letter-spacing: 0.12em; text-transform: uppercase; border-top: 1px solid var(--border); }
 
-    /* ── Stat chips ── */
-    .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-    .stat {
-      padding: 5px 12px; border: 1px solid var(--border-mid);
-      font-size: 12px; font-weight: 700; font-family: 'SF Mono', Menlo, monospace;
-    }
-    .stat span { color: var(--text-3); font-weight: 400; margin-right: 4px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+    /* ── Grows with you ── */
+    .flow-inner-wide { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .grow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 28px; align-items: start; }
+    .grow-col h3 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .grow-col .grow-desc { font-size: 13px; color: var(--text-2); line-height: 1.65; margin-bottom: 16px; }
 
     /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 24px; text-align: center;
-    }
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; }
     footer p { font-size: 12px; color: var(--text-3); letter-spacing: 0.04em; }
 
     @media (max-width: 640px) {
       .flow-inner { grid-template-columns: 1fr; gap: 28px; }
       .phone-frame { position: static; max-width: 240px; margin: 0 auto; }
       .flow-visual { order: -1; }
+      .grow-grid { grid-template-columns: 1fr; }
       .hero { padding: 56px 20px 48px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Topbar -->
   <header class="topbar">
     <div class="topbar-inner">
       <span class="topbar-brand">AC Logs</span>
@@ -224,9 +171,7 @@
   <section class="hero">
     <div class="hero-eyebrow">Athletic Clubs · Personal Dashboard</div>
     <h1>Track your lifts.<br>Know your PRs.</h1>
-    <p class="hero-sub">
-      A self-hosted workout dashboard for Athletic Clubs members. Log sessions, ask Claude what to lift, watch your strength compound over time.
-    </p>
+    <p class="hero-sub">A self-hosted workout log for Athletic Clubs members. Snap the workout board, get weight suggestions, log your sets, and watch your strength trend over time.</p>
 
     <div class="terminal">
       <div class="terminal-header">
@@ -235,7 +180,7 @@
       </div>
       <div class="terminal-body">
         <span class="terminal-prompt">$</span>
-        <span class="terminal-cmd" id="install-cmd">git clone https://github.com/ayush29feb/gym &amp;&amp; cd gym &amp;&amp; claude</span>
+        <span class="terminal-cmd">git clone https://github.com/ayush29feb/gym &amp;&amp; cd gym &amp;&amp; claude</span>
         <button class="copy-btn" onclick="navigator.clipboard.writeText('git clone https://github.com/ayush29feb/gym && cd gym && claude');this.textContent='Copied'">Copy</button>
       </div>
     </div>
@@ -249,7 +194,7 @@
         </div>
         <div class="cc-response">
           Installing dependencies, building server, generating types…<br>
-          <strong>✓ Ready.</strong> Both servers are running. Open the dashboard at your Tailscale IP.
+          <strong>✓ Ready.</strong> Open the dashboard at your Tailscale IP.
         </div>
       </div>
       <div class="cc-footer">
@@ -258,93 +203,119 @@
       </div>
     </div>
 
-    <p class="terminal-sub" style="margin-top:14px">Then ask Claude to start the servers any time — from your Mac or phone.</p>
+    <p class="terminal-sub" style="margin-top:14px">Then say "start the servers" any time — from your Mac or phone.</p>
   </section>
 
-  <!-- Flow 1: Before the gym -->
+  <!-- Flow 1: Arrive at the gym -->
   <section class="flow-section">
-    <div class="flow-inner">
+    <div class="flow-inner flow-inner-solo">
       <div class="flow-content">
-        <div class="flow-eyebrow">Before the gym</div>
-        <h2>Ask Claude what to lift</h2>
-        <p class="lead">
-          Claude knows your training history and your PRs. Ask it what weight to use today — it'll look at your last session for each lift and give you a target based on where you left off.
-        </p>
+        <div class="flow-eyebrow">Arriving at the gym</div>
+        <h2>Snap the board. Get your weights.</h2>
+        <p class="lead">The workout is written on the screen at the gym. Take a photo, send it to Claude. It reads the movements, looks at your last session for each lift, and tells you exactly what to load on the bar.</p>
         <div class="chat">
-          <div class="bubble user">What should I squat today? Working up to a heavy set of 3.</div>
+          <div class="bubble user">here's today's workout [photo of AC whiteboard]</div>
           <div class="bubble claude">
-            Your last 3RM was <span class="highlight">175 lbs</span> on Mar 17. You've hit 185 for a single. Try opening at 155 → 165 → <span class="highlight">175–180</span> for your top set. Push to 180 if it moves clean.
+            I see: Back Squat 5×3, Bench Press 4×5, Pull-ups 3×max.<br><br>
+            Based on your last sessions:<br>
+            · <span class="hi">Back Squat → 170 lbs</span> (last 3RM was 165, felt like RPE 7)<br>
+            · <span class="hi">Bench Press → 120 lbs</span> (last 5RM was 115 at RPE 8, push +5)<br>
+            · Pull-ups → bodyweight, aim to beat 8 reps from last week
           </div>
-          <div class="bubble user">And bench?</div>
-          <div class="bubble claude">
-            Last bench session was 125×3 at RPE 8. Same weight or +5 — <span class="highlight">130 lbs</span> for 3 if you're feeling good.
-          </div>
-        </div>
-      </div>
-      <div class="flow-visual">
-        <div class="phone-frame">
-          <img src="images/prs.jpg" alt="PRs view" />
-          <div class="phone-label">PRs view</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Flow 2: At the gym / logging -->
+  <!-- Flow 2: Logging -->
+  <section class="flow-section">
+    <div class="flow-inner flow-inner-solo">
+      <div class="flow-content">
+        <div class="flow-eyebrow">During the session</div>
+        <h2>Log as you go. Free form, no forms.</h2>
+        <p class="lead">Just tell Claude what you did. No rigid format — write it however it comes naturally. Include notes on how it felt, if you had to drop weight, if something felt off. Claude parses it all.</p>
+        <div class="chat">
+          <div class="bubble user">squat — 135×5, 155×3, 170×3 felt solid maybe RPE 8. tried 175 for a bonus set got 2 reps</div>
+          <div class="bubble claude">Logged. That 175×2 is worth noting — you're close to a new 3RM. I'll flag it when we save.</div>
+          <div class="bubble user">bench 95 105 115 120×5 all good. pull-ups bw 9, 7, 6. left shoulder felt a little tight on last set</div>
+          <div class="bubble claude">Got it — shoulder note saved. <span class="hi">120×5 bench is a new 5RM.</span> Anything else before I save this session?</div>
+          <div class="bubble user">nope that's it</div>
+          <div class="bubble claude">✓ Session saved. 2 PRs updated: Bench 5RM 120 lbs, Squat 2RM 175 lbs.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flow 3: History -->
   <section class="flow-section">
     <div class="flow-inner">
       <div class="flow-content">
-        <div class="flow-eyebrow">At the gym</div>
-        <h2>Log as you go</h2>
-        <p class="lead">
-          Write your workout in plain markdown during or after the session. Drop it in the <code style="font-family:monospace;font-size:12px;color:#aaa">workouts/</code> folder and run the import — Claude handles the rest.
-        </p>
+        <div class="flow-eyebrow">After your session</div>
+        <h2>Insights and trends.</h2>
+        <p class="lead">Ask Claude for a read on how your training is going. Or scroll through your history — every session, every block, every note, all in one place.</p>
         <div class="chat">
-          <div class="bubble user">I just finished. Back squat 135×5, 155×3, 175×3 @8. Deadlift 225×3, 245×3, 260×1 @9.</div>
+          <div class="bubble user">how's my progress looking over the last 2 months?</div>
           <div class="bubble claude">
-            Got it. That's a <span class="highlight">new deadlift 1RM</span> — 260 lbs. Adding it to your log now.
-            <br><br><span class="subdued">Importing workout · updating PRs…</span>
-          </div>
-          <div class="bubble claude">
-            ✓ Session saved. 2 PRs updated: Deadlift 1RM 260, Back Squat 3RM 175.
+            Squat: <span class="hi">+20 lbs on 3RM</span> since Feb. Deadlift trending up consistently. Bench has stalled — same 5RM for 6 weeks, might be worth a deload or technique check.<br><br>
+            Your lower body days are more consistent than upper. 11 lower sessions vs 7 upper this cycle.
           </div>
         </div>
       </div>
       <div class="flow-visual">
         <div class="phone-frame">
-          <img src="images/history.jpg" alt="History view" />
+          <img src="images/history.jpg" alt="History" />
           <div class="phone-label">History view</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Flow 3: PRs + insights -->
+  <!-- Flow 4: PRs -->
   <section class="flow-section">
     <div class="flow-inner">
       <div class="flow-content">
-        <div class="flow-eyebrow">Over time</div>
-        <h2>Watch your strength compound</h2>
-        <p class="lead">
-          Every session feeds into your PR table. Filter by date range to see how you've progressed over the last month or year. Tap any lift to see your weight-over-time chart.
-        </p>
-        <div class="stats">
-          <div class="stat"><span>Deadlift 1RM</span>260 lbs</div>
-          <div class="stat"><span>Squat 3RM</span>175 lbs</div>
-          <div class="stat"><span>Bench 5RM</span>115 lbs</div>
-          <div class="stat"><span>Pull-ups 3RM</span>+35 lbs</div>
-        </div>
-        <div class="chat" style="margin-top:20px">
-          <div class="bubble user">How has my deadlift progressed this year?</div>
-          <div class="bubble claude">
-            January: 225 for 3. Now you're pulling 260 for a single — roughly <span class="highlight">+15% in 3 months</span>. Your 3RM jumped from 215 to 245. Strong trend.
-          </div>
+        <div class="flow-eyebrow">Your personal records</div>
+        <h2>Every PR. Every rep range.</h2>
+        <p class="lead">The PRs page tracks your best weight for every exercise across 1, 3, 5, and 8 rep maxes — updated automatically as you log sessions. Filter by time range to see how your strength has moved.</p>
+        <div class="chat">
+          <div class="bubble user">what should I prioritize next block?</div>
+          <div class="bubble claude">Push upper frequency to match lower, and add a dedicated bench variation. Your squat is in a good place — you could back off intensity slightly and build volume instead.</div>
         </div>
       </div>
       <div class="flow-visual">
         <div class="phone-frame">
-          <img src="images/prs.jpg" alt="PRs view" />
-          <div class="phone-label">PRs · 3M</div>
+          <img src="images/prs.jpg" alt="PRs" />
+          <div class="phone-label">PRs · all time</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flow 4: It grows with you -->
+  <section class="flow-section">
+    <div class="flow-inner-wide">
+      <div class="flow-eyebrow">The bigger picture</div>
+      <h2>This isn't an app. It's Claude with your training data.</h2>
+      <p class="lead" style="max-width:600px; font-size:14px; color:var(--text-2); line-height:1.7; margin-top:8px;">
+        Because AC Logs runs inside a Claude session, Claude isn't just a front-end for a workout log — it's a training partner that knows your full history. You can ask it anything, teach it how you like to work, and add new features to the dashboard just by asking.
+      </p>
+
+      <div class="grow-grid">
+        <div class="grow-col">
+          <h3>Teach it your style</h3>
+          <p class="grow-desc">Tell Claude your preferences once and it carries them forward. Program style, how you like weight suggestions, what to flag — it remembers.</p>
+          <div class="chat">
+            <div class="bubble user">I'm running MPA Squad programming. When suggesting weights always use RPE targets, not percentages.</div>
+            <div class="bubble claude">Got it — I'll always frame suggestions as RPE targets and reference your MPA sessions specifically when looking at history.</div>
+          </div>
+        </div>
+        <div class="grow-col">
+          <h3>Evolve the dashboard</h3>
+          <p class="grow-desc">Want a new view, a new chart, a new filter? Just ask Claude to build it. The whole codebase is in the repo — Claude can read it, change it, and ship it.</p>
+          <div class="chat">
+            <div class="bubble user">can you add a volume chart to the PRs page? sets × reps × weight per week</div>
+            <div class="bubble claude">On it — adding a weekly volume chart below the PR table. Should be ready in a minute.</div>
+          </div>
         </div>
       </div>
     </div>
