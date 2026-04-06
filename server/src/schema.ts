@@ -54,11 +54,6 @@ export const typeDefs = /* GraphQL */ `
     relatedExercises: [Exercise!]!
   }
 
-  type PrEntry {
-    weightLbs: Float!
-    date: String!
-  }
-
   type Progress {
     exerciseName: String!
     prs: [RepsPr!]!
