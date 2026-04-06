@@ -181,6 +181,9 @@ function HistoryContent({ activeTags }: { activeTags: globalThis.Set<string> }) 
 
   return (
     <div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 10 }}>
+        {workouts.length} {workouts.length === 1 ? 'session' : 'sessions'}
+      </div>
       {workouts.map((w) => <WorkoutRow key={w.id} workout={w} />)}
     </div>
   );
