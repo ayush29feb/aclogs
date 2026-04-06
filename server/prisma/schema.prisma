@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Exercise {
+  id           Int               @id @default(autoincrement())
+  name         String            @unique
+  muscle_group String?
+  notes        String?
+  sets         Set[]
+  relations    ExerciseRelation[] @relation("ExerciseRelations")
+  related_by   ExerciseRelation[] @relation("RelatedExerciseRelations")
+
+  @@map("exercises")
+}
+
+model Workout {
+  id          Int     @id @default(autoincrement())
+  name        String
+  date        String
+  sleep_hours Float?
+  tags        String?
+  notes       String?
+  photo_path  String?
+  blocks      Block[]
+
+  @@map("workouts")
+}
+
+model Block {
+  id         Int     @id @default(autoincrement())
+  workout_id Int
+  name       String
+  order      Int
+  scheme     String?
+  workout    Workout @relation(fields: [workout_id], references: [id])
+  sets       Set[]
+
+  @@map("blocks")
+}
+
+model Set {
+  id            Int      @id @default(autoincrement())
+  block_id      Int
+  exercise_id   Int
+  round         Int
+  weight_lbs    Float?
+  reps          Int?
+  rpe           Float?
+  duration_secs Int?
+  distance_m    Float?
+  calories      Float?
+  watts         Float?
+  notes         String?
+  logged_at     String
+  block         Block    @relation(fields: [block_id], references: [id])
+  exercise      Exercise @relation(fields: [exercise_id], references: [id])
+
+  @@map("sets")
+}
+
+model ExerciseRelation {
+  exercise_id         Int
+  related_exercise_id Int
+  relation_type       String   @default("variant")
+  exercise            Exercise @relation("ExerciseRelations", fields: [exercise_id], references: [id])
+  related_exercise    Exercise @relation("RelatedExerciseRelations", fields: [related_exercise_id], references: [id])
+
+  @@id([exercise_id, related_exercise_id])
+  @@map("exercise_relations")
+}
