@@ -72,17 +72,17 @@ function BlockSection({ block }: { block: Block }) {
   }
 
   return (
-    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>
+    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #1e1e1e' }}>
+      <div style={{ fontSize: 9, fontWeight: 700, color: '#444444', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 8 }}>
         {block.name}
       </div>
       {exerciseOrder.map((name) => {
         const sets = bySets.get(name)!;
         const chips = sets.map(formatSetChip);
         return (
-          <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 13, padding: '3px 0', gap: 8 }}>
-            <span style={{ color: 'var(--text-1)', fontWeight: 500, flexShrink: 0 }}>{name}</span>
-            <span style={{ color: 'var(--text-2)', fontSize: 12, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{chips.join('  ')}</span>
+          <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '3px 0', gap: 12 }}>
+            <span style={{ color: '#cccccc', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>{name}</span>
+            <span style={{ color: '#666666', fontSize: 12, textAlign: 'right', fontVariantNumeric: 'tabular-nums', letterSpacing: '0.03em' }}>{chips.join('  ·  ')}</span>
           </div>
         );
       })}
@@ -98,23 +98,23 @@ function WorkoutRow({ workout }: { workout: Workout }) {
   );
 
   return (
-    <div className="card" style={{ marginBottom: 1 }}>
+    <div style={{ borderBottom: '1px solid #1e1e1e' }}>
       <button
-        style={{ padding: '14px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
+        style={{ padding: '16px 0', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
         onClick={() => setExpanded(!expanded)}
       >
-        <div>
-          <div style={{ fontWeight: 800, fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{workout.name}</div>
-          <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3, letterSpacing: '0.03em' }}>
-            {fmtDate(workout.date)} &nbsp;·&nbsp; {setCount} sets{workout.sleepHours != null && ` · ${workout.sleepHours}h sleep`}
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffffff' }}>{workout.name}</div>
+          <div style={{ fontSize: 11, color: '#555555', marginTop: 4, letterSpacing: '0.04em' }}>
+            {fmtDate(workout.date)}<span style={{ margin: '0 6px', color: '#333' }}>·</span>{setCount} sets{workout.sleepHours != null && <><span style={{ margin: '0 6px', color: '#333' }}>·</span>{workout.sleepHours}h sleep</>}
           </div>
         </div>
-        <span style={{ color: 'var(--text-3)', fontSize: 14, marginTop: 2 }}>{expanded ? '▲' : '▼'}</span>
+        <span style={{ color: '#444444', fontSize: 10, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
       </button>
       {expanded && (
-        <div style={{ padding: '0 16px 14px', borderTop: '1px solid var(--border)' }}>
+        <div style={{ paddingBottom: 16 }}>
           {workout.notes && (
-            <div style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 10, marginBottom: 4 }}>{workout.notes}</div>
+            <div style={{ fontSize: 12, color: '#666666', marginBottom: 8 }}>{workout.notes}</div>
           )}
           {workout.blocks.map((b) => <BlockSection key={b.id} block={b} />)}
         </div>
@@ -134,7 +134,7 @@ function HistoryContent({ tag }: { tag: string | null }) {
   }
 
   return (
-    <div>
+    <div style={{ borderTop: '1px solid #1e1e1e' }}>
       {workouts.map((w) => <WorkoutRow key={w.id} workout={w} />)}
     </div>
   );
