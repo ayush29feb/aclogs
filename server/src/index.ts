@@ -13,7 +13,12 @@ server.listen(port, () => {
   console.log(`Gym GraphQL server running at http://localhost:${port}/graphql`);
 });
 
-process.on('SIGTERM', async () => {
+async function shutdown() {
+  await new Promise<void>((resolve, reject) =>
+    server.close((err) => (err ? reject(err) : resolve()))
+  );
   await prisma.$disconnect();
-  server.close();
-});
+}
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
