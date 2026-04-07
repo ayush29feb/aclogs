@@ -14,7 +14,7 @@ AC Logs runs on your Mac. You view it from your phone via Tailscale.
 Your phone
   └── Safari / Chrome ───Tailscale──► Dashboard (localhost:47323)
                                            └── GraphQL API (localhost:47322)
-                                                    └── data/gym.db
+                                                    └── ~/.aclogs/data/gym.db
 ```
 
 ---
@@ -26,18 +26,15 @@ Your phone
 
 ---
 
-## First-time setup
-
-Open the repo in Claude Code on your Mac:
+## Install
 
 ```bash
-cd gym
-claude
+claude plugin install ayush29feb/aclogs
 ```
 
-Then ask Claude:
+Then in any Claude Code session:
 
-> "Set up AC Logs for the first time — install dependencies and start the servers."
+> "Set up AC Logs for the first time."
 
 Claude will install all dependencies, build the server, generate types, and start both servers.
 
