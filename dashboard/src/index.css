@@ -51,8 +51,20 @@ h1, h2, h3 {
 .shell {
   max-width: 680px;
   margin: 0 auto;
-  padding: 0 16px 80px;
+  padding: 0 16px 120px;
+  overflow-x: hidden;
 }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.slide-in-left  { animation: slideInLeft  0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
 
 .topbar {
   position: sticky;
@@ -88,12 +100,27 @@ h1, h2, h3 {
   right: 0;
   z-index: 50;
   display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  padding-bottom: max(env(safe-area-inset-bottom, 12px), 12px);
+  background: transparent;
+  pointer-events: none;
+}
+
+.tab-bar {
+  display: flex;
   justify-content: space-around;
-  background: rgba(0, 0, 0, 0.85);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  align-items: center;
+  background: rgba(28, 28, 30, 0.92);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 22px;
+  padding: 8px 16px;
+  gap: 8px;
+  pointer-events: all;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  width: 100%;
+  max-width: 320px;
 }
 
 .bottom-nav button {
@@ -101,23 +128,26 @@ h1, h2, h3 {
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 10px 32px;
+  padding: 6px 24px;
   font-size: 10px;
   font-weight: 500;
-  color: #555555;
-  letter-spacing: 0.02em;
+  color: #636366;
+  letter-spacing: 0.01em;
   background: none;
   border: none;
   cursor: pointer;
-  transition: color 0.15s;
+  transition: color 0.2s;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  border-radius: 14px;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.bottom-nav button.active { color: #ffffff; }
-
-.nav-icon {
-  line-height: 1;
+.bottom-nav button.active {
+  color: #ffffff;
 }
+
+.nav-icon { line-height: 1; }
+.nav-label { line-height: 1; }
 
 .card {
   background: var(--card);
