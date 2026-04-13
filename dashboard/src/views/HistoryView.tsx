@@ -63,7 +63,12 @@ function formatSetChip(s: WorkoutSet): string {
   if (s.weightLbs != null) return `${s.weightLbs} lbs`;
   if (s.watts != null) return `${s.watts}W`;
   if (s.calories != null) return `${s.calories}cal`;
-  if (s.durationSecs != null) return `${Math.round(s.durationSecs / 60)}min`;
+  if (s.durationSecs != null) {
+    const secs = Math.round(s.durationSecs);
+    if (secs < 60) return `${secs}s`;
+    const m = Math.floor(secs / 60), rem = secs % 60;
+    return rem > 0 ? `${m}m ${rem}s` : `${m}m`;
+  }
   if (s.distanceM != null) return `${(s.distanceM / 1000).toFixed(1)}km`;
   return '—';
 }
