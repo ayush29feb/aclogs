@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG="$HOME/.aclogs/config"
+
+# Only inject context if AC Logs has been set up
+if [ ! -f "$CONFIG" ]; then
+  exit 0
+fi
+
+source "$CONFIG"
+
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
+
+context="AC Logs is installed at ${ACLOGS_ROOT}. Database is at ${ACLOGS_DATA}/gym.db. If the user asks about their workouts, AC Logs, lifting data, or wants to start/stop servers, use the AC Logs skills: aclogs:setup, aclogs:start-servers, aclogs:stop-servers, aclogs:import-workouts, aclogs:remote-control."
+
+escaped=$(escape_for_json "$context")
+
+if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
+else
+  printf '{\n  "additionalContext": "%s"\n}\n' "$escaped"
+fi
+
+exit 0

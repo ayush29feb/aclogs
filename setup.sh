@@ -17,11 +17,21 @@ echo "Installing dashboard dependencies..."
 cd "$GYM/dashboard" && npm install
 
 # ── server/.env ──────────────────────────────────────────────────────
+DATA_DIR="$HOME/.aclogs/data"
+CONFIG_FILE="$HOME/.aclogs/config"
 ENV_FILE="$GYM/server/.env"
-mkdir -p "$GYM/data"
+
+mkdir -p "$DATA_DIR"
+
+# Write config so skills can locate the plugin root
+cat > "$CONFIG_FILE" << EOF
+ACLOGS_ROOT="$GYM"
+ACLOGS_DATA="$DATA_DIR"
+EOF
+
 if [ ! -f "$ENV_FILE" ]; then
   echo "Creating server/.env..."
-  echo "DATABASE_URL=\"file://$GYM/data/gym.db\"" > "$ENV_FILE"
+  echo "DATABASE_URL=\"file://$DATA_DIR/gym.db\"" > "$ENV_FILE"
 fi
 
 # ── Relay types ──────────────────────────────────────────────────────
@@ -29,7 +39,7 @@ echo "Generating Relay types..."
 cd "$GYM/dashboard" && npm run relay
 
 # ── Verify DB ────────────────────────────────────────────────────────
-DB_FILE="$GYM/data/gym.db"
+DB_FILE="$DATA_DIR/gym.db"
 if [ ! -f "$DB_FILE" ]; then
   echo ""
   echo "⚠  No database found at $DB_FILE"
@@ -47,26 +57,7 @@ else
   echo "✓ Database verified."
 fi
 
-# ── Shell profile ────────────────────────────────────────────────────
-SHELL_RC=""
-if [ -f "$HOME/.zshrc" ]; then
-  SHELL_RC="$HOME/.zshrc"
-elif [ -f "$HOME/.bashrc" ]; then
-  SHELL_RC="$HOME/.bashrc"
-elif [ -f "$HOME/.bash_profile" ]; then
-  SHELL_RC="$HOME/.bash_profile"
-fi
-
-if [ -n "$SHELL_RC" ]; then
-  if grep -q 'export GYM=' "$SHELL_RC"; then
-    sed -i '' "s|export GYM=.*|export GYM=\"$GYM\"|" "$SHELL_RC"
-  else
-    echo "export GYM=\"$GYM\"" >> "$SHELL_RC"
-  fi
-  echo "Added GYM=$GYM to $SHELL_RC"
-fi
-
 echo ""
 echo "✓ AC Logs is ready."
 echo ""
-echo "Next: open Claude Code in this directory and say 'start the servers'"
+echo "Next: in any Claude Code session, say 'start AC Logs servers'"
